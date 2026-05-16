@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Novel Web</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1a1410;
+      --paper: #f5f0e8;
+      --cream: #ede8dc;
+      --blush: #d4a9a0;
+      --mauve: #9b7b8c;
+      --plum: #5c3d52;
+      --sage: #7a8c75;
+      --gold: #c9a84c;
+      --mist: rgba(245,240,232,0.85);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ── DARK MODE ── */
+    body.dark {
+      --ink: #f0ebe0;
+      --paper: #14100d;
+      --cream: #1e1812;
+      --blush: #a07870;
+      --mist: rgba(20,16,13,0.9);
+    }
+
+    body.dark .novel-card          { background: #1e1812; border-color: rgba(255,255,255,0.06); }
+    body.dark .search-input        { background: #1e1812; border-color: rgba(255,255,255,0.1); color: var(--ink); }
+    body.dark .search-input::placeholder { color: rgba(240,235,224,0.35); }
+    body.dark .suggestions-box     { background: #1e1812; border-color: rgba(255,255,255,0.08); }
+    body.dark .suggestion-item:hover { background: rgba(255,255,255,0.05); }
+    body.dark .pill                { background: rgba(255,255,255,0.06); color: rgba(240,235,224,0.6); }
+    body.dark .pill.active         { background: var(--plum); color: white; }
+    body.dark .chapter-badge       { background: rgba(255,255,255,0.06); color: rgba(240,235,224,0.5); }
+    body.dark .status-badge.completed  { background: rgba(122,140,117,0.2); color: #7a8c75; }
+    body.dark .status-badge.ongoing    { background: rgba(201,168,76,0.15); color: #c9a84c; }
+    body.dark .status-badge.releasing  { background: rgba(155,123,140,0.15); color: #9b7b8c; }
+    body.dark .hero-line           { border-color: rgba(255,255,255,0.08); }
+    body.dark .site-nav            { background: rgba(20,16,13,0.95); border-color: rgba(255,255,255,0.06); }
+    body.dark .announcement        { background: #1e1812; border-color: rgba(255,255,255,0.06); }
+    body.dark .countdown-box       { background: #1e1812; border-color: rgba(255,255,255,0.06); }
+    body.dark .filter-section      { background: #1e1812; border-color: rgba(255,255,255,0.06); }
+    body.dark .search-wrapper      { background: #1e1812; border-color: rgba(255,255,255,0.08); }
+    body.dark .soon-card           { background: #1e1812; border-color: rgba(255,255,255,0.06); }
+    body.dark .history-item        { color: var(--mauve); }
+
+    /* ── NAV ── */
+    .site-nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+      background: var(--mist);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(26,20,16,0.08);
+      transition: background 0.3s;
+    }
+
+    .nav-brand {
+      font-family: 'DM Serif Display', serif;
+      font-size: 20px; letter-spacing: 0.05em;
+      color: var(--plum);
+    }
+    .nav-brand span { font-style: italic; color: var(--mauve); }
+
+    .theme-btn {
+      background: none;
+      border: 1px solid rgba(26,20,16,0.15);
+      border-radius: 50%; width: 36px; height: 36px;
+      cursor: pointer; font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; color: var(--ink);
+    }
+    .theme-btn:hover { background: var(--cream); transform: scale(1.05); }
+
+    /* ── ANNOUNCEMENT ── */
+    .announcement {
+      background: var(--cream);
+      border-bottom: 1px solid rgba(26,20,16,0.07);
+      padding: 10px 40px;
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 16px;
+      font-size: 11.5px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--mauve);
+      overflow: hidden; transition: all 0.4s ease;
+    }
+
+    .announcement-track { overflow: hidden; flex: 1; }
+
+    .announcement-scroll {
+      white-space: nowrap; display: inline-block;
+      animation: ticker 22s linear infinite; font-weight: 500;
+    }
+    .announcement-scroll em { font-style: normal; color: var(--plum); font-weight: 500; }
+
+    @keyframes ticker {
+      0%   { transform: translateX(60vw); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .ann-close {
+      cursor: pointer; font-size: 16px; color: var(--mauve);
+      opacity: 0.5; flex-shrink: 0; transition: opacity 0.2s;
+    }
+    .ann-close:hover { opacity: 1; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 60px 40px 40px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 40px; align-items: center;
+      max-width: 1100px; margin: 0 auto;
+    }
+
+    .hero-eyebrow {
+      font-size: 10px; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--mauve); margin-bottom: 16px;
+    }
+
+    .hero-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(42px, 6vw, 72px);
+      line-height: 1.0; color: var(--plum); margin-bottom: 12px;
+    }
+    .hero-title em { font-style: italic; color: var(--mauve); }
+
+    .hero-sub {
+      font-size: 14px; line-height: 1.7;
+      color: var(--mauve); max-width: 320px; margin-bottom: 28px;
+    }
+
+    .hero-line { width: 50px; height: 1px; background: var(--blush); margin-bottom: 20px; }
+
+    .hero-stats { display: flex; gap: 32px; }
+
+    .stat { display: flex; flex-direction: column; gap: 2px; }
+
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px; font-weight: 300;
+      color: var(--plum); line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 10px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--mauve);
+    }
+
+    /* ── COUNTDOWN ── */
+    .hero-countdown { display: flex; flex-direction: column; gap: 16px; }
+
+    .countdown-box {
+      background: var(--cream);
+      border: 1px solid rgba(26,20,16,0.07);
+      border-radius: 20px; padding: 36px 32px;
+      position: relative; overflow: hidden;
+    }
+
+    .countdown-box::before {
+      content: '';
+      position: absolute; top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(212,169,160,0.3), transparent 70%);
+      pointer-events: none;
+    }
+
+    .countdown-label-top {
+      font-size: 10px; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--mauve); margin-bottom: 20px;
+    }
+
+    .countdown-display {
+      display: flex; gap: 12px;
+      align-items: flex-start; flex-wrap: wrap;
+    }
+
+    .cd-unit { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+    .cd-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 52px; font-weight: 300; line-height: 1;
+      color: var(--plum); min-width: 60px; text-align: center;
+    }
+
+    .cd-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mauve); }
+
+    .cd-colon {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 40px; color: var(--blush);
+      line-height: 1; padding-top: 6px; opacity: 0.6;
+    }
+
+    .countdown-title {
+      margin-top: 16px;
+      font-family: 'DM Serif Display', serif;
+      font-size: 16px; font-style: italic; color: var(--plum);
+    }
+
+    .released-msg {
+      display: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; color: var(--plum); font-style: italic;
+    }
+
+    /* ── SOON CARD ── */
+    .soon-card {
+      background: var(--cream);
+      border: 1px solid rgba(26,20,16,0.07);
+      border-radius: 16px; padding: 20px 24px;
+      display: flex; align-items: center; gap: 16px;
+    }
+
+    .soon-cover {
+      width: 48px; height: 68px; border-radius: 6px;
+      background: linear-gradient(135deg, var(--mauve), var(--blush));
+      flex-shrink: 0; display: flex; align-items: center;
+      justify-content: center; font-size: 8px; color: white;
+      text-align: center; padding: 4px;
+      font-family: 'Cormorant Garamond', serif; font-style: italic; line-height: 1.3;
+    }
+
+    .soon-info { flex: 1; }
+
+    .soon-eyebrow {
+      font-size: 9px; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--mauve); margin-bottom: 4px;
+    }
+
+    .soon-title { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--plum); font-style: italic; }
+
+    .soon-badge {
+      font-size: 10px; background: rgba(155,123,140,0.12);
+      color: var(--mauve); padding: 3px 10px;
+      border-radius: 20px; margin-top: 6px;
+      display: inline-block; letter-spacing: 0.08em;
+    }
+
+    /* ── SEARCH ── */
+    .search-section { max-width: 1100px; margin: 0 auto; padding: 0 40px 24px; }
+
+    .search-wrapper {
+      display: flex; align-items: center;
+      background: white;
+      border: 1px solid rgba(26,20,16,0.1);
+      border-radius: 50px; padding: 6px 6px 6px 22px;
+      box-shadow: 0 4px 24px rgba(92,61,82,0.06);
+      transition: box-shadow 0.3s, border-color 0.3s;
+      position: relative;
+    }
+
+    .search-wrapper:focus-within {
+      border-color: var(--mauve);
+      box-shadow: 0 4px 30px rgba(92,61,82,0.12);
+    }
+
+    .search-icon-inner { font-size: 14px; opacity: 0.35; flex-shrink: 0; margin-right: 10px; }
+
+    .search-input {
+      flex: 1; border: none; outline: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 300;
+      background: transparent; color: var(--ink);
+    }
+    .search-input::placeholder { color: rgba(26,20,16,0.3); }
+
+    .search-btn {
+      background: var(--plum); color: white; border: none;
+      border-radius: 50px; padding: 10px 24px;
+      font-family: 'DM Sans', sans-serif; font-size: 13px;
+      cursor: pointer; letter-spacing: 0.05em;
+      transition: background 0.2s, transform 0.15s; flex-shrink: 0;
+    }
+    .search-btn:hover { background: var(--mauve); transform: scale(1.02); }
+
+    .clear-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 15px; color: rgba(26,20,16,0.25);
+      padding: 0 8px; display: none; transition: color 0.2s;
+    }
+    .clear-btn:hover { color: var(--mauve); }
+
+    /* ── SUGGESTIONS ── */
+    .suggestions-box {
+      position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+      background: white;
+      border: 1px solid rgba(26,20,16,0.08);
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(26,20,16,0.1);
+      z-index: 50; display: none; overflow: hidden;
+    }
+
+    body.dark .suggestions-box { background: #1e1812; }
+
+    .suggestions-header {
+      font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(26,20,16,0.35); padding: 10px 18px 6px;
+      border-bottom: 1px solid rgba(26,20,16,0.05);
+    }
+
+    body.dark .suggestions-header { color: rgba(240,235,224,0.35); border-color: rgba(255,255,255,0.05); }
+
+    .suggestion-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 18px; cursor: pointer; transition: background 0.15s;
+    }
+    .suggestion-item:hover { background: rgba(212,169,160,0.08); }
+
+    .s-name {
+      font-size: 14px; color: var(--plum);
+      font-family: 'Cormorant Garamond', serif; font-style: italic; flex: 1;
+    }
+
+    body.dark .s-name { color: var(--blush); }
+
+    .s-tags { font-size: 11px; color: var(--mauve); opacity: 0.7; }
+
+    .s-status { font-size: 10px; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.05em; }
+    .s-status.ongoing   { background: rgba(201,168,76,0.12); color: #9a7f30; }
+    .s-status.completed { background: rgba(122,140,117,0.12); color: var(--sage); }
+    .s-status.releasing { background: rgba(155,123,140,0.12); color: var(--mauve); }
+
+    .history-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 18px; font-size: 13px;
+      color: var(--mauve); cursor: pointer; transition: background 0.15s;
+    }
+    .history-item:hover { background: rgba(212,169,160,0.08); }
+    .history-remove { margin-left: auto; font-size: 13px; opacity: 0.3; }
+    .history-remove:hover { opacity: 0.7; color: var(--blush); }
+
+    /* ── FILTERS ── */
+    .filter-section {
+      background: var(--cream);
+      border: 1px solid rgba(26,20,16,0.07);
+      border-radius: 50px; padding: 10px 20px;
+      display: flex; align-items: center;
+      gap: 8px; flex-wrap: wrap; margin-top: 12px;
+    }
+
+    .filter-group { display: flex; align-items: center; gap: 6px; }
+
+    .filter-divider-v {
+      width: 1px; height: 18px;
+      background: rgba(26,20,16,0.1); flex-shrink: 0;
+    }
+
+    .filter-label {
+      font-size: 9px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: rgba(26,20,16,0.35); flex-shrink: 0;
+    }
+
+    body.dark .filter-label { color: rgba(240,235,224,0.35); }
+
+    .pill {
+      padding: 5px 14px; border-radius: 50px;
+      font-size: 11.5px; font-family: 'DM Sans', sans-serif;
+      background: rgba(26,20,16,0.06); color: rgba(26,20,16,0.55);
+      border: none; cursor: pointer; transition: all 0.2s;
+      letter-spacing: 0.02em; white-space: nowrap;
+    }
+    .pill:hover { background: rgba(26,20,16,0.1); color: var(--plum); }
+    .pill.active { background: var(--plum); color: white; }
+
+    .pill.romance.active { background: #b0546a; }
+    .pill.drama.active   { background: var(--plum); }
+    .pill.slice.active   { background: var(--sage); }
+    .pill.sad.active     { background: #5f7489; }
+    .pill.mystery.active { background: #614d7a; }
+    .pill.action.active  { background: #8b3030; }
+
+    .results-count {
+      font-size: 11px; color: var(--mauve); opacity: 0.6;
+      padding: 0 4px; letter-spacing: 0.05em;
+    }
+
+    /* ── MAIN ── */
+    .main-grid { max-width: 1100px; margin: 0 auto; padding: 8px 40px 60px; }
+
+    .section-header {
+      display: flex; align-items: baseline;
+      justify-content: space-between; margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(26,20,16,0.07);
+    }
+
+    .section-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--plum); }
+    .section-count { font-size: 11px; color: var(--mauve); opacity: 0.5; letter-spacing: 0.1em; }
+
+    /* ── NOVEL CARDS ── */
+    .novel-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .novel-card {
+      background: white;
+      border: 1px solid rgba(26,20,16,0.07);
+      border-radius: 16px; padding: 20px;
+      display: flex; align-items: center; gap: 20px;
+      cursor: pointer; transition: all 0.25s ease;
+      text-decoration: none; color: inherit;
+      position: relative; overflow: hidden;
+    }
+
+    .novel-card::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--blush); opacity: 0; transition: opacity 0.3s;
+    }
+
+    .novel-card:hover {
+      border-color: rgba(92,61,82,0.15);
+      box-shadow: 0 8px 32px rgba(92,61,82,0.08);
+      transform: translateY(-2px);
+    }
+
+    .novel-card:hover::before { opacity: 1; }
+    .novel-card.hidden { display: none; }
+
+    .novel-card.releasing {
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .cover-img {
+      width: 72px; height: 104px; border-radius: 8px;
+      object-fit: cover;
+      box-shadow: 3px 4px 12px rgba(26,20,16,0.18);
+      flex-shrink: 0; transition: transform 0.3s;
+    }
+    .novel-card:hover .cover-img { transform: scale(1.04) rotate(-1deg); }
+
+    .cover-placeholder {
+      width: 72px; height: 104px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 9px; color: white; text-align: center; padding: 8px;
+      line-height: 1.3; box-shadow: 3px 4px 12px rgba(26,20,16,0.18);
+    }
+
+    .novel-info { flex: 1; min-width: 0; }
+
+    .novel-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-style: italic;
+      color: var(--plum); margin-bottom: 8px; line-height: 1.2;
+      transition: color 0.2s;
+    }
+    .novel-card:hover .novel-title { color: var(--mauve); }
+
+    .novel-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+
+    .genre-tag {
+      font-size: 10px; padding: 3px 10px;
+      border-radius: 50px; letter-spacing: 0.05em;
+    }
+    .genre-tag.romance { background: rgba(176,84,106,0.1); color: #b0546a; }
+    .genre-tag.drama   { background: rgba(92,61,82,0.1); color: var(--plum); }
+    .genre-tag.slice   { background: rgba(122,140,117,0.12); color: var(--sage); }
+    .genre-tag.sad     { background: rgba(95,116,137,0.1); color: #5f7489; }
+    .genre-tag.mystery { background: rgba(97,77,122,0.1); color: #614d7a; }
+    .genre-tag.action  { background: rgba(139,48,48,0.1); color: #8b3030; }
+
+    .status-badge {
+      font-size: 10px; padding: 3px 10px;
+      border-radius: 50px; letter-spacing: 0.05em; font-weight: 500;
+    }
+    .status-badge.ongoing   { background: rgba(201,168,76,0.12); color: #9a7f30; }
+    .status-badge.completed { background: rgba(122,140,117,0.12); color: var(--sage); }
+    .status-badge.releasing { background: rgba(155,123,140,0.12); color: var(--mauve); }
+
+    .chapter-badge {
+      font-size: 10px; padding: 3px 10px;
+      border-radius: 50px; background: rgba(26,20,16,0.05);
+      color: rgba(26,20,16,0.4); letter-spacing: 0.03em;
+    }
+
+    .novel-byline {
+      font-size: 11px; color: var(--mauve); opacity: 0.5;
+      letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px;
+    }
+
+    .novel-arrow {
+      font-size: 18px; color: var(--blush);
+      opacity: 0; transition: all 0.3s; flex-shrink: 0;
+      transform: translateX(-8px);
+    }
+    .novel-card:hover .novel-arrow { opacity: 1; transform: translateX(0); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid rgba(26,20,16,0.07);
+      padding: 24px 40px; text-align: center;
+      font-size: 11px; color: var(--mauve);
+      opacity: 0.5; letter-spacing: 0.08em; line-height: 1.8;
+    }
+
+    /* ── SCROLL BTN ── */
+    #scrollBtn {
+      position: fixed; bottom: 28px; right: 28px;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--plum); color: white; border: none;
+      cursor: pointer; font-size: 16px;
+      display: none; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(92,61,82,0.3);
+      transition: all 0.2s; z-index: 50;
+    }
+    #scrollBtn:hover { background: var(--mauve); transform: translateY(-2px); }
+
+    /* ── ANIMATIONS ── */
+    .fade-in { opacity: 0; transform: translateY(16px); animation: fadeUp 0.6s ease forwards; }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    .fade-in:nth-child(1) { animation-delay: 0.05s; }
+    .fade-in:nth-child(2) { animation-delay: 0.12s; }
+    .fade-in:nth-child(3) { animation-delay: 0.19s; }
+    .fade-in:nth-child(4) { animation-delay: 0.26s; }
+    .fade-in:nth-child(5) { animation-delay: 0.33s; }
+    .fade-in:nth-child(6) { animation-delay: 0.40s; }
+    .fade-in:nth-child(7) { animation-delay: 0.47s; }
+    .fade-in:nth-child(8) { animation-delay: 0.54s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; padding: 32px 20px 24px; gap: 28px; }
+      .hero-countdown { order: -1; }
+      .site-nav { padding: 0 20px; }
+      .announcement { padding: 9px 20px; }
+      .search-section { padding: 0 20px 20px; }
+      .main-grid { padding: 8px 20px 40px; }
+      .filter-section { border-radius: 16px; overflow-x: auto; flex-wrap: nowrap; padding: 10px 16px; }
+      .filter-divider-v { display: none; }
+      .cd-num { font-size: 38px; min-width: 46px; }
+      footer { padding: 20px; }
+    }
+
+    @media (max-width: 480px) {
+      .novel-card { padding: 14px; gap: 14px; }
+      .cover-img, .cover-placeholder { width: 58px; height: 84px; }
+      .novel-title { font-size: 16px; }
+      .hero-title { font-size: 36px; }
+      .countdown-box { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="site-nav">
+    <div class="nav-brand">A <span>Novel</span> Web</div>
+    <div class="nav-right">
+      <button class="theme-btn" id="themeBtn" onclick="toggleDark()">🌙</button>
+    </div>
+  </nav>
+
+  <!-- ANNOUNCEMENT -->
+  <div class="announcement" id="annBar">
+    <div class="announcement-track">
+      <div class="announcement-scroll">
+        ✦ &nbsp;&nbsp;
+        <em>The Petal That Falls With a Smile Vol. 2</em>
+        &nbsp; is now available to read &nbsp;&nbsp; ✦ &nbsp;&nbsp;
+        <em>New novel coming soon</em>
+        &nbsp; stay tuned every Monday &nbsp;&nbsp; ✦
+      </div>
+    </div>
+    <span class="ann-close" onclick="closeAnn()">✕</span>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+
+    <div class="hero-text fade-in" style="animation-delay:0.1s">
+      <div class="hero-eyebrow">Original Fiction · By AKA</div>
+      <h1 class="hero-title">Stories<br>worth<br><em>feeling.</em></h1>
+      <div class="hero-line"></div>
+      <p class="hero-sub">A collection of romance, drama, and slice-of-life novels crafted with care. Updated weekly.</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-num">8</div>
+          <div class="stat-label">Novels</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">30+</div>
+          <div class="stat-label">Chapters</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">6</div>
+          <div class="stat-label">Ongoing</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-countdown fade-in" style="animation-delay:0.25s">
+
+      <!-- SOON CARD -->
+      <div class="soon-card">
+        <div class="soon-cover">New<br>Novel</div>
+        <div class="soon-info">
+          <div class="soon-eyebrow">Coming Soon</div>
+          <div class="soon-title">Next Novel by AKA</div>
+          <span class="soon-badge">⏳ Date TBD</span>
+        </div>
+      </div>
+
+      <!-- COUNTDOWN -->
+      <div class="countdown-box">
+        <div class="countdown-label-top">Next Release In</div>
+        <div class="countdown-display" id="countdownDisplay">
+          <div class="cd-unit">
+            <div class="cd-num" id="days">00</div>
+            <div class="cd-label">Days</div>
+          </div>
+          <div class="cd-colon">:</div>
+          <div class="cd-unit">
+            <div class="cd-num" id="hours">00</div>
+            <div class="cd-label">Hrs</div>
+          </div>
+          <div class="cd-colon">:</div>
+          <div class="cd-unit">
+            <div class="cd-num" id="minutes">00</div>
+            <div class="cd-label">Min</div>
+          </div>
+          <div class="cd-colon">:</div>
+          <div class="cd-unit">
+            <div class="cd-num" id="seconds">00</div>
+            <div class="cd-label">Sec</div>
+          </div>
+        </div>
+        <div class="released-msg" id="releasedMsg">🎉 It's here — go read it now!</div>
+        <div class="countdown-title">The Petal That Falls With a Smile Vol. 2</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SEARCH -->
+  <div class="search-section">
+    <div class="search-wrapper" id="searchWrapper">
+      <span class="search-icon-inner">🔍</span>
+      <input class="search-input" id="searchInput" type="text"
+        placeholder="Search novels or genres…"
+        onkeyup="searchSuggest()"
+        onblur="hideSuggestions()"
+        autocomplete="off">
+      <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
+      <button class="search-btn" onclick="filterNovels()">Search</button>
+      <div class="suggestions-box" id="suggestionsBox"></div>
+    </div>
+
+    <div class="filter-section">
+      <!-- GENRE -->
+      <span class="filter-label">Genre</span>
+      <div class="filter-group" id="genreGroup">
+        <button class="pill active" data-genre="all">All</button>
+        <button class="pill romance" data-genre="romance">💗 Romance</button>
+        <button class="pill drama" data-genre="drama">🎭 Drama</button>
+        <button class="pill slice" data-genre="slice of life">🌿 Slice of Life</button>
+        <button class="pill sad" data-genre="sad">🩶 Sad</button>
+        <button class="pill mystery" data-genre="mystery">🔍 Mystery</button>
+        <button class="pill action" data-genre="action">⚔️ Action</button>
+      </div>
+
+      <div class="filter-divider-v"></div>
+
+      <!-- STATUS -->
+      <span class="filter-label">Status</span>
+      <div class="filter-group" id="statusGroup">
+        <button class="pill active" data-status="all">All</button>
+        <button class="pill" data-status="ongoing">🟢 Ongoing</button>
+        <button class="pill" data-status="completed">✅ Complete</button>
+      </div>
+
+      <div class="filter-divider-v"></div>
+
+      <!-- SORT -->
+      <span class="filter-label">Sort</span>
+      <div class="filter-group" id="sortGroup">
+        <button class="pill active" data-sort="newest">🆕 Newest</button>
+        <button class="pill" data-sort="oldest">📅 Oldest</button>
+      </div>
+
+      <span class="results-count" id="resultsCount"></span>
+    </div>
+  </div>
+
+  <!-- NOVELS -->
+  <main class="main-grid">
+    <div class="section-header">
+      <h2 class="section-title">Library</h2>
+      <span class="section-count" id="libraryCount">8 works</span>
+    </div>
+
+    <div class="novel-list" id="novelList">
+
+      <!-- THE RAIN PACT -->
+      <a class="novel-card fade-in" href="rpc.html" data-order="1" data-status="completed">
+        <img class="cover-img" src="rp.jpg" alt="The Rain Pact"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cover-placeholder" style="background:linear-gradient(135deg,#9b7b8c,#d4a9a0);display:none;">The Rain Pact</div>
+        <div class="novel-info">
+          <div class="novel-title">The Rain Pact</div>
+          <div class="novel-badges">
+            <span class="genre-tag romance">Romance</span>
+            <span class="genre-tag drama">Drama</span>
+            <span class="genre-tag slice">Slice of Life</span>
+            <span class="status-badge completed">✅ Completed</span>
+            <span class="chapter-badge">📖 6 Chapters</span>
+          </div>
+          <div class="novel-byline">A Novel by AKA</div>
+        </div>
+        <span class="novel-arrow">→</span>
+      </a>
+
+      <!-- TEN PERCENT OF FOREVER -->
+      <a class="novel-card fade-in" href="tpof.html" data-order="2" data-status="ongoing">
+        <img class="cover-img" src="tpof.jpg" alt="Ten Percent of Forever"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cover-placeholder" style="background:linear-gradient(135deg,#c3a7f4,#f4a7c3);display:none;">Ten Percent of Forever</div>
+        <div class="novel-info">
+          <div class="novel-title">Ten Percent of Forever</div>
+          <div class="novel-badges">
+            <span class="genre-tag romance">Romance</span>
+            <span class="genre-tag drama">Drama</span>
+            <span class="genre-tag slice">Slice of Life</span>
+            <span class="status-badge ongoing">🟢 Ongoing</span>
+            <span class="chapter-badge">📖 6 Chapters</span>
+          </div>
+          <div class="novel-byline">A Novel by AKA</div>
+        </div>
+        <span class="novel-arrow">→</span>
+      </a>
+
+      <!-- THE PETAL VOL 1 -->
+      <a class="novel-card fade-in" href="tptfwas.html" data-order="3" data-status="completed">
+        <img class="cover-img" src="tptfwas.jpg" alt="The Petal Vol 1"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cover-placeholder" style="background:linear-gradient(135deg,#7a8c75,#c9a84c);display:none;">The Petal Vol 1</div>
+        <div class="novel-info">
+          <div class="novel-title">The Petal That Falls With a Smile <em style="font-size:14px;opacity:0.6;">Vol. 1</em></div>
+          <div class="novel-badges">
+            <span class="genre-tag drama">Drama</span>
+            <span class="genre-tag slice">Slice of Life</span>
+            <span class="status-badge completed">✅ Completed</span>
+            <span class="chapter-badge">📖 4 Chapters</span>
+          </div>
+          <div class="novel-byline">A Novel by AKA</div>
+        </div>
+        <span class="novel-arrow">→</span>
+      </a>
+
+      <!-- THE DAY SHE STAYED -->
+      <a class="novel-card fade-in" href="tdss.html" data-order="4" data-status="ongoing">
+        <img class="cover-img" src="tdss.jpg" alt="The Day She Stayed"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cover-placeholder" style="background:linear-gradient(135deg,#5f7489,#9b7b8c);display:none;">The Day She Stayed</div>
+        <div class="novel-info">
+          <div class="novel-title">The Day She Stayed</div>
+          <div class="novel-badges">
+            <span class="genre-tag romance">Romance</span>
+            <span class="genre-tag drama">Drama</span>
+            <span class="genre-tag sad">Sad</span>
+            <span class="status-badge ongoing">🟢 Ongoing</span>
+            <span class="chapter-badge">📖 5 Chapters</span>
+          </div>
+          <div class="novel-byline">A Novel by AKA</div>
+        </div>
+        <span class="novel-arrow">→</span>
+      </a>
+
+      <!-- HIM AND HER -->
+      <a class="novel-card fade-in" href="hah.html" data-order="5" data-status="completed">
+        <img class="cover-img" src="hah.jpg" alt="Him and Her"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cover-placeholder" style="background:linear-gradient(135deg,#d4a9a0,#c9a84c);display:none;">Him and Her</div>
+        <div class="novel-info">
+          <div class="novel-title">Him and Her</div>
+          <div class="novel-badges">
+            <span class="genre-tag romance">Romance</span>
+            <span class="genre-tag drama">Drama</span>
+            <span class="genre-tag slice">Slice of Life</span>
+            <span class="status-badge completed">✅ Completed</span>
+            <span class="chapter-badge">📖 5 Chapters</span>
+          </div>
+          <div class="novel-byline">A Novel by AKA</div>
+        </div>
+        <span class="novel-arrow">→</span>
+      </a>
+
+      <!-- CASE FILE: YOU -->
+      <a class="novel-card fade-in" href="cfy.html" data-order="6" data-status="ongoing">
+        <img class="cover-img" src="cfy.jpg" alt="Case File: You"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cover-placeholder" style="background:linear-gradient(135deg,#614d7a,#8b3030);display:none;">Case File: You</div>
+        <div class="novel-info">
+          <div class="novel-title">Case File: You</div>
+          <div class="novel-badges">
+            <span class="genre-tag mystery">Mystery</span>
+            <span class="genre-tag drama">Drama</span>
+            <span class="genre-tag action">Action</span>
+            <span class="status-badge ongoing">🟢 Ongoing</span>
+            <span class="chapter-badge">📖 2 Chapters</span>
+          </div>
+          <div class="novel-byline">A Novel by AKA · Biweekly Updates</div>
+        </div>
+        <span class="novel-arrow">→</span>
+      </a>
+
+      <!-- THE OTHER SIDE OF RAIN -->
+      <a class="novel-card fade-in" href="tosor.html" data-order="7" data-status="ongoing">
+        <img class="cover-img" src="tosor.jpg" alt="The Other Side of Rain" style="filter:saturate(0.7)"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cover-placeholder" style="background:linear-gradient(135deg,#5f7489,#9b7b8c);display:none;">The Other Side of Rain</div>
+        <div class="novel-info">
+          <div class="novel-title">The Other Side of Rain</div>
+          <div class="novel-badges">
+            <span class="genre-tag romance">Romance</span>
+            <span class="genre-tag drama">Drama</span>
+            <span class="genre-tag slice">Slice of Life</span>
+            <span class="status-badge ongoing">🟢 Ongoing</span>
+            <span class="chapter-badge">📖 1 Chapter</span>
+          </div>
+          <div class="novel-byline">A Novel by AKA · Weekly Updates</div>
+        </div>
+        <span class="novel-arrow">→</span>
+      </a>
+
+      <!-- THE PETAL VOL 2 -->
+      <a class="novel-card fade-in" href="tptfwasv2.html" data-order="8" data-status="ongoing">
+        <img class="cover-img" src="tptfwasv2.jpg" alt="The Petal Vol 2"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="cover-placeholder" style="background:linear-gradient(135deg,#c97fa0,#f9c7d9);display:none;">The Petal Vol 2</div>
+        <div class="novel-info">
+          <div class="novel-title">The Petal That Falls With a Smile <em style="font-size:14px;opacity:0.6;">Vol. 2</em></div>
+          <div class="novel-badges">
+            <span class="genre-tag romance">Romance</span>
+            <span class="genre-tag drama">Drama</span>
+            <span class="genre-tag slice">Slice of Life</span>
+            <span class="status-badge ongoing">🟢 Ongoing</span>
+            <span class="chapter-badge">📖 TBD</span>
+          </div>
+          <div class="novel-byline">A Novel by AKA</div>
+        </div>
+        <span class="novel-arrow">→</span>
+      </a>
+
+    </div>
+  </main>
+
+  <footer>
+    Last Updated: 14th May · Version 1.4<br>
+    Please do not repost, copy, or reupload stories without permission. Sharing links is always appreciated.
+  </footer>
+
+  <button id="scrollBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+  <script>
+    /* ── DATA ── */
+    var novels = [
+      { name: "The Rain Pact",                           link: "rpc.html",       tags: "Romance Drama Slice of Life", status: "completed" },
+      { name: "Ten Percent of Forever",                  link: "tpof.html",      tags: "Romance Drama Slice of Life", status: "ongoing"   },
+      { name: "The Petal That Falls With a Smile Vol 1", link: "tptfwas.html",   tags: "Drama Slice of Life",         status: "completed" },
+      { name: "The Day She Stayed",                      link: "tdss.html",      tags: "Romance Drama Sad",           status: "ongoing"   },
+      { name: "Him and Her",                             link: "hah.html",       tags: "Romance Drama Slice of Life", status: "completed" },
+      { name: "Case File: You",                          link: "cfy.html",       tags: "Mystery Drama Action",        status: "ongoing"   },
+      { name: "The Other Side of Rain",                  link: "tosor.html",     tags: "Romance Drama Slice of Life", status: "ongoing"   },
+      { name: "The Petal That Falls With a Smile Vol 2", link: "tptfwasv2.html", tags: "Romance Drama Slice of Life", status: "ongoing"   }
+    ];
+
+    var activeGenre  = 'all';
+    var activeStatus = 'all';
+    var activeSort   = 'newest';
+    var searchHistory = [];
+
+    try { searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]'); } catch(e){}
+
+    /* ── FILTER PILLS (event delegation) ── */
+    document.getElementById('genreGroup').addEventListener('click', function(e) {
+      var btn = e.target.closest('.pill');
+      if (!btn) return;
+      this.querySelectorAll('.pill').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeGenre = btn.dataset.genre || 'all';
+      filterNovels();
+    });
+
+    document.getElementById('statusGroup').addEventListener('click', function(e) {
+      var btn = e.target.closest('.pill');
+      if (!btn) return;
+      this.querySelectorAll('.pill').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeStatus = btn.dataset.status || 'all';
+      filterNovels();
+    });
+
+    document.getElementById('sortGroup').addEventListener('click', function(e) {
+      var btn = e.target.closest('.pill');
+      if (!btn) return;
+      this.querySelectorAll('.pill').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeSort = btn.dataset.sort || 'newest';
+      var list = document.getElementById('novelList');
+      var items = Array.from(list.querySelectorAll('.novel-card'));
+      items.sort(function(a, b) {
+        var ao = parseInt(a.dataset.order) || 0;
+        var bo = parseInt(b.dataset.order) || 0;
+        return activeSort === 'newest' ? bo - ao : ao - bo;
+      });
+      items.forEach(function(item) { list.appendChild(item); });
+      filterNovels();
+    });
+
+    /* ── SEARCH ── */
+    function searchSuggest() {
+      var input = document.getElementById('searchInput').value.toLowerCase().trim();
+      var clearBtn = document.getElementById('clearBtn');
+      clearBtn.style.display = input.length > 0 ? 'block' : 'none';
+      filterNovels();
+
+      if (!input) {
+        if (searchHistory.length) showHistory();
+        else document.getElementById('suggestionsBox').style.display = 'none';
+        return;
+      }
+
+      var matches = novels.filter(function(n) {
+        return n.name.toLowerCase().includes(input) || n.tags.toLowerCase().includes(input);
+      });
+
+      var box = document.getElementById('suggestionsBox');
+      if (!matches.length) { box.style.display = 'none'; return; }
+
+      box.innerHTML = '<div class="suggestions-header">📖 Novels</div>' +
+        matches.map(function(n) {
+          var stClass = n.status === 'completed' ? 'completed' : n.status === 'releasing' ? 'releasing' : 'ongoing';
+          var stText  = n.status === 'completed' ? '✅ Complete' : n.status === 'releasing' ? '⏳ Coming' : '🟢 Ongoing';
+          return '<div class="suggestion-item" onmousedown="goTo(\'' + n.link + '\',\'' + n.name.replace(/'/g,"") + '\')">' +
+                 '<span class="s-name">' + n.name + '</span>' +
+                 '<span class="s-tags">' + n.tags + '</span>' +
+                 '<span class="s-status ' + stClass + '">' + stText + '</span>' +
+                 '</div>';
+        }).join('');
+      box.style.display = 'block';
+    }
+
+    function showHistory() {
+      var box = document.getElementById('suggestionsBox');
+      if (!searchHistory.length) { box.style.display = 'none'; return; }
+      box.innerHTML = '<div class="suggestions-header">Recent Searches</div>' +
+        searchHistory.slice(0, 5).map(function(h, i) {
+          return '<div class="history-item">' +
+                 '<span style="flex:1" onmousedown="useHistory(\'' + h.replace(/'/g,'') + '\')">' + h + '</span>' +
+                 '<span class="history-remove" onmousedown="removeHistory(' + i + ')">✕</span>' +
+                 '</div>';
+        }).join('');
+      box.style.display = 'block';
+    }
+
+    function useHistory(t) {
+      document.getElementById('searchInput').value = t;
+      document.getElementById('clearBtn').style.display = 'block';
+      filterNovels(); hideSuggestions();
+    }
+
+    function removeHistory(i) {
+      searchHistory.splice(i, 1);
+      try { localStorage.setItem('searchHistory', JSON.stringify(searchHistory)); } catch(e){}
+      showHistory();
+    }
+
+    function goTo(link, name) {
+      if (name && !searchHistory.includes(name)) {
+        searchHistory.unshift(name);
+        if (searchHistory.length > 10) searchHistory.pop();
+        try { localStorage.setItem('searchHistory', JSON.stringify(searchHistory)); } catch(e){}
+      }
+      if (link) window.location.href = link;
+    }
+
+    function hideSuggestions() {
+      setTimeout(function() {
+        document.getElementById('suggestionsBox').style.display = 'none';
+      }, 200);
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('clearBtn').style.display = 'none';
+      document.getElementById('suggestionsBox').style.display = 'none';
+      filterNovels();
+    }
+
+    /* ── MAIN FILTER ── */
+    function filterNovels() {
+      var input = document.getElementById('searchInput').value.toLowerCase();
+      var cards = document.querySelectorAll('#novelList .novel-card');
+      var visible = 0;
+
+      cards.forEach(function(card) {
+        var text      = card.innerText.toLowerCase();
+        var status    = card.dataset.status || '';
+        var mSearch   = !input || text.includes(input);
+        var mGenre    = activeGenre === 'all' || text.includes(activeGenre);
+        var mStatus   = activeStatus === 'all' || status === activeStatus;
+
+        if (mSearch && mGenre && mStatus) {
+          card.classList.remove('hidden'); visible++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      var rc = document.getElementById('resultsCount');
+      var lc = document.getElementById('libraryCount');
+      if (input || activeGenre !== 'all' || activeStatus !== 'all') {
+        rc.textContent = visible + ' found';
+        lc.textContent = visible + ' works';
+      } else {
+        rc.textContent = '';
+        lc.textContent = '8 works';
+      }
+    }
+
+    /* ── COUNTDOWN ── */
+    /* Set your next release date here */
+    var releaseDate = new Date('2026-06-15T00:00:00').getTime();
+
+    function updateCountdown() {
+      var diff = releaseDate - Date.now();
+      if (diff <= 0) {
+        document.getElementById('countdownDisplay').style.display = 'none';
+        document.getElementById('releasedMsg').style.display = 'block';
+        document.querySelector('.countdown-label-top').textContent = '🎉 Released!';
+        return;
+      }
+      document.getElementById('days').textContent    = String(Math.floor(diff / 86400000)).padStart(2,'0');
+      document.getElementById('hours').textContent   = String(Math.floor(diff % 86400000 / 3600000)).padStart(2,'0');
+      document.getElementById('minutes').textContent = String(Math.floor(diff % 3600000 / 60000)).padStart(2,'0');
+      document.getElementById('seconds').textContent = String(Math.floor(diff % 60000 / 1000)).padStart(2,'0');
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    /* ── DARK MODE ── */
+    function toggleDark() {
+      document.body.classList.toggle('dark');
+      var on = document.body.classList.contains('dark');
+      document.getElementById('themeBtn').textContent = on ? '☀️' : '🌙';
+      try { localStorage.setItem('darkMode', on ? 'on' : 'off'); } catch(e){}
+    }
+
+    /* ── SCROLL BTN ── */
+    window.addEventListener('scroll', function() {
+      document.getElementById('scrollBtn').style.display = window.scrollY > 200 ? 'flex' : 'none';
+    });
+
+    /* ── ANNOUNCEMENT ── */
+    function closeAnn() {
+      var bar = document.getElementById('annBar');
+      bar.style.transition = 'all 0.4s ease';
+      bar.style.opacity = '0';
+      bar.style.maxHeight = '0';
+      bar.style.padding = '0';
+      bar.style.borderWidth = '0';
+      setTimeout(function() { bar.remove(); }, 400);
+    }
+
+    /* ── INIT ── */
+    window.addEventListener('load', function() {
+      try {
+        if (localStorage.getItem('darkMode') === 'on') {
+          document.body.classList.add('dark');
+          document.getElementById('themeBtn').textContent = '☀️';
+        }
+      } catch(e){}
+    });
+  </script>
+
+</body>
+</html>
