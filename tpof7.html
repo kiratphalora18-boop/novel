@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ten Percent of Forever — Chapter 7: The Last Morning, 7:10 AM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#faf6ee;--surface:#f4ede0;--ink:#241c10;--ink-soft:rgba(36,28,16,0.5);--ink-faint:rgba(36,28,16,0.07);--gold:#c9883a;--gold-dim:rgba(201,136,58,0.28);--amber:#e8a84a;--warm:#b07030;--fog:rgba(250,246,238,0.96);--reading-width:660px;}
+    *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+    body{font-family:'Lora',serif;font-weight:400;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden;transition:background 0.4s,color 0.4s;}
+    body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9998;}
+    #sparkCanvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.45;}
+    body.dark{--bg:#120e08;--surface:#1c1610;--ink:#f0e8d8;--ink-soft:rgba(240,232,216,0.45);--ink-faint:rgba(240,232,216,0.06);--fog:rgba(18,14,8,0.97);}
+    body.dark .nav-bar{background:var(--fog);border-color:var(--ink-faint);}
+    body.dark .chapter-header{background:var(--surface);border-color:var(--ink-faint);}
+    body.dark .font-panel{background:var(--surface);border-color:var(--ink-faint);}
+    body.dark .font-btn{background:rgba(255,255,255,0.06);color:var(--ink);border-color:var(--ink-faint);}
+    body.dark .icon-btn{border-color:var(--ink-faint);}
+    body.dark .chapter-nav{border-color:var(--ink-faint);}
+    body.dark .nav-prev{background:rgba(255,255,255,0.06);color:var(--ink);border-color:var(--ink-faint);}
+    body.dark .nav-prev:hover{background:var(--gold);color:white;}
+    body.dark .reading-progress-bar{background:var(--ink-faint);}
+    body.dark .sketch-card{background:rgba(28,22,16,0.88);border-color:rgba(201,136,58,0.2);}
+    body.dark .finale-card{background:rgba(28,22,16,0.7);border-color:rgba(201,136,58,0.15);}
+    .reading-progress-bar{position:fixed;top:0;left:0;height:2px;background:rgba(36,28,16,0.08);width:100%;z-index:200;}
+    .reading-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--amber));width:0%;transition:width 0.1s linear;}
+    .nav-bar{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:58px;background:var(--fog);backdrop-filter:blur(20px);border-bottom:1px solid rgba(36,28,16,0.08);transition:background 0.4s;}
+    .back-link{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--gold);font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:0.05em;transition:gap 0.2s,color 0.2s;}.back-link:hover{gap:12px;color:var(--ink);}.back-arrow{transition:transform 0.2s;}.back-link:hover .back-arrow{transform:translateX(-3px);}
+    .nav-center{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-soft);text-align:center;}
+    .nav-right{display:flex;align-items:center;gap:10px;}
+    .icon-btn{background:none;border:1px solid rgba(36,28,16,0.12);border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;color:var(--ink);position:relative;font-family:'DM Sans',sans-serif;}.icon-btn:hover{background:var(--surface);transform:scale(1.05);}
+    .font-panel{position:absolute;top:calc(100% + 8px);right:0;background:white;border:1px solid rgba(36,28,16,0.1);border-radius:14px;padding:16px 18px;display:none;flex-direction:column;gap:12px;box-shadow:0 12px 40px rgba(36,28,16,0.1);z-index:200;min-width:200px;}.font-panel.open{display:flex;}
+    .font-panel-label{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--ink-soft);}
+    .font-controls-row{display:flex;align-items:center;gap:8px;}
+    .font-btn{flex:1;padding:8px;border:1px solid rgba(36,28,16,0.1);border-radius:8px;background:var(--surface);cursor:pointer;font-family:'Cormorant Garamond',serif;color:var(--ink);transition:all 0.2s;text-align:center;}.font-btn:hover{background:var(--gold);color:white;border-color:var(--gold);}
+    .font-size-display{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);min-width:30px;text-align:center;}
+
+    /* CHAPTER HEADER */
+    .chapter-header{max-width:var(--reading-width);margin:48px auto 0;padding:44px 48px 36px;background:var(--surface);border:1px solid rgba(36,28,16,0.07);border-radius:20px;text-align:center;position:relative;z-index:2;animation:fadeUp 0.55s ease both;overflow:hidden;}
+    /* sketchbook lines */
+    .chapter-header::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(transparent,transparent 27px,rgba(201,136,58,0.04) 27px,rgba(201,136,58,0.04) 28px);pointer-events:none;}
+    .final-badge{display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);background:rgba(201,136,58,0.1);border:1px solid rgba(201,136,58,0.22);padding:4px 14px;border-radius:20px;margin-bottom:18px;position:relative;}
+    .novel-name{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;opacity:0.8;position:relative;}
+    .chapter-label{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px;position:relative;}
+    .chapter-title{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,4.5vw,40px);font-weight:300;font-style:italic;color:var(--ink);line-height:1.2;margin-bottom:6px;position:relative;}
+    .chapter-time{font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);opacity:0.6;margin-bottom:20px;position:relative;}
+    .chapter-divider{display:flex;align-items:center;justify-content:center;gap:10px;position:relative;}
+    .div-line{width:28px;height:1px;background:var(--gold-dim);}
+    .div-pct{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:var(--gold-dim);}
+
+    /* STORY */
+    .story-wrapper{max-width:var(--reading-width);margin:0 auto;padding:0 24px 60px;position:relative;z-index:2;animation:fadeUp 0.6s ease both;animation-delay:0.1s;}
+    .story-body{font-family:'Lora',serif;font-size:18px;line-height:1.95;color:var(--ink);padding:44px 0 0;transition:font-size 0.2s;position:relative;}
+    .story-body::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(transparent,transparent 34px,rgba(201,136,58,0.025) 34px,rgba(201,136,58,0.025) 35px);pointer-events:none;}
+    .story-body p:first-of-type::first-letter{font-family:'Cormorant Garamond',serif;font-size:4.2em;font-style:italic;color:var(--gold);float:left;line-height:0.75;margin-right:8px;margin-top:6px;font-weight:300;}
+    .story-body p{margin-bottom:1.6em;text-align:left;position:relative;}
+    .section-break{text-align:center;color:var(--gold);opacity:0.4;font-size:14px;letter-spacing:0.3em;margin:2em 0;user-select:none;position:relative;}
+
+    /* SKETCH CARD — Mei's drawing */
+    .sketch-card{margin:2em 0;background:rgba(244,237,224,0.85);border:1px solid var(--gold-dim);border-radius:16px;padding:30px 36px;position:relative;overflow:hidden;}
+    .sketch-card::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(transparent,transparent 27px,rgba(201,136,58,0.04) 27px,rgba(201,136,58,0.04) 28px);pointer-events:none;}
+    .sketch-eyebrow{font-family:'DM Sans',sans-serif;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);opacity:0.7;margin-bottom:12px;position:relative;}
+    .sketch-desc{font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;line-height:1.8;color:var(--warm);position:relative;}
+
+    /* FINALE CARD */
+    .finale-card{margin-top:36px;background:rgba(244,237,224,0.65);border:1px solid rgba(201,136,58,0.2);border-radius:18px;padding:44px 36px;text-align:center;position:relative;overflow:hidden;animation:fadeUp 0.5s ease both;animation-delay:0.28s;}
+    .finale-card::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(transparent,transparent 27px,rgba(201,136,58,0.04) 27px,rgba(201,136,58,0.04) 28px);pointer-events:none;}
+    .finale-quote{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;font-weight:300;color:var(--warm);line-height:1.6;margin-bottom:20px;position:relative;}
+    .finale-pct{font-family:'Cormorant Garamond',serif;font-size:56px;font-style:italic;font-weight:300;color:var(--gold);opacity:0.18;line-height:1;margin-bottom:14px;letter-spacing:-0.02em;}
+    .finale-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-style:italic;font-weight:300;color:var(--warm);margin-bottom:6px;position:relative;}
+    .finale-sub{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px;position:relative;}
+    .finale-attr{font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-soft);opacity:0.5;position:relative;}
+
+    .chapter-nav{display:flex;justify-content:space-between;align-items:center;padding:28px 0 0;border-top:1px solid rgba(36,28,16,0.08);gap:12px;flex-wrap:wrap;margin-top:8px;}
+    .nav-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:50px;text-decoration:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;letter-spacing:0.04em;transition:all 0.25s ease;border:1px solid transparent;}
+    .nav-prev{background:rgba(36,28,16,0.06);color:var(--ink-soft);border-color:rgba(36,28,16,0.1);}.nav-prev:hover{background:var(--gold);color:white;border-color:var(--gold);}
+    .nav-home{background:var(--gold);color:white;border-color:var(--gold);}.nav-home:hover{background:var(--warm);border-color:var(--warm);}
+    #scrollBtn{position:fixed;bottom:28px;right:28px;width:40px;height:40px;border-radius:50%;background:var(--gold);color:white;border:none;cursor:pointer;font-size:15px;display:none;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(201,136,58,0.35);transition:all 0.2s;z-index:50;}#scrollBtn:hover{opacity:0.85;transform:translateY(-2px);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:600px){.nav-bar{padding:0 16px}.nav-center{display:none}.chapter-header{margin-left:16px;margin-right:16px;padding:30px 22px 26px}.story-wrapper{padding:0 16px 48px}.story-body{font-size:16px;padding-top:32px}.sketch-card{padding:22px 18px}.finale-card{padding:32px 24px}.chapter-nav{justify-content:center}.nav-btn{font-size:12px;padding:9px 16px}}
+  </style>
+</head>
+<body>
+  <div class="reading-progress-bar"><div class="reading-progress-fill" id="readingProgress"></div></div>
+  <canvas id="sparkCanvas"></canvas>
+
+  <nav class="nav-bar">
+    <a href="tpof.html" class="back-link"><span class="back-arrow">←</span><span>Chapters</span></a>
+    <div class="nav-center">Ten Percent of Forever &nbsp;·&nbsp; Final Chapter</div>
+    <div class="nav-right">
+      <div style="position:relative">
+        <button class="icon-btn" id="fontToggle" onclick="toggleFontPanel()">Aa</button>
+        <div class="font-panel" id="fontPanel">
+          <span class="font-panel-label">Text Size</span>
+          <div class="font-controls-row">
+            <button class="font-btn" onclick="changeFont(-1)" style="font-size:13px">A−</button>
+            <span class="font-size-display" id="fontDisplay">18</span>
+            <button class="font-btn" onclick="changeFont(1)" style="font-size:20px">A+</button>
+          </div>
+          <button class="font-btn" onclick="changeFont(0)" style="font-size:13px;letter-spacing:0.1em;">Reset</button>
+        </div>
+      </div>
+      <button class="icon-btn" id="themeBtn" onclick="toggleDark()">🌙</button>
+    </div>
+  </nav>
+
+  <div class="chapter-header" style="margin-left:auto;margin-right:auto;max-width:660px;">
+    <div class="final-badge">✦ &nbsp; Final Chapter</div>
+    <div class="novel-name">Ten Percent of Forever</div>
+    <div class="chapter-label">Chapter Ten</div>
+    <h1 class="chapter-title">The Last Morning</h1>
+    <div class="chapter-time">7:10 AM</div>
+    <div class="chapter-divider"><div class="div-line"></div><span class="div-pct">10%</span><div class="div-line"></div></div>
+  </div>
+
+  <div class="story-wrapper">
+    <div class="story-body" id="storyBody">
+
+      <p>The school year was ending.<br>
+      Desks were already being rearranged. Uniforms had started to feel too tight or too loose. Yearbooks were being passed around with halfhearted jokes scribbled into margins.<br>
+      Everything felt like it was moving too fast.<br>
+      Except for this moment.</p>
+
+      <p>7:10 AM.<br>
+      The vending machine roof still leaked slightly in the corner.<br>
+      The sky was a soft grey — not raining, not sunny, just… somewhere in between.<br>
+      Hiro stood there, hands in his pockets, breathing slow.<br>
+      And then — footsteps.</p>
+
+      <p>She came into view, hair slightly windblown, blazer wrinkled, sketchbook tucked carefully beneath her arm.<br>
+      Mei.<br>
+      "Morning," she said, stepping under the roof beside him.<br>
+      "You're late," he teased.<br>
+      "You're early."<br>
+      He smiled. "You came."<br>
+      "Of course I did," she said.</p>
+
+      <div class="section-break">— 10% —</div>
+
+      <p>Then held up a folded piece of paper.<br>
+      "This is yours."<br>
+      He blinked. "What's this?"<br>
+      "I drew the first day. The umbrella day."<br>
+      She pressed it into his hands before he could react.<br>
+      Then added, "It felt right to give it back. You started it."</p>
+
+      <!-- SKETCH CARD -->
+      <div class="sketch-card">
+        <div class="sketch-eyebrow">Mei's drawing — the first day</div>
+        <div class="sketch-desc">Two figures under an umbrella, but this time… their faces were visible.<br>Smiling.</div>
+      </div>
+
+      <p>Mei looked away, suddenly shy.<br>
+      "You kept showing up," she said softly. "Even after I pushed you away. Even when I was scared."<br>
+      "I was scared too."<br>
+      "But you were kind," she whispered. "Not loud. Not dramatic. Just… here. Every time."</p>
+
+      <div class="section-break">— 10% —</div>
+
+      <p>A pause.<br>
+      Then Hiro took a deep breath.<br>
+      Reached into his bag.<br>
+      And pulled out an umbrella.<br>
+      "Want to walk with me?" he asked.<br>
+      She stared for a second — like she might cry, or laugh, or both.<br>
+      Then nodded.<br>
+      And reached out her hand to hold the handle with him.</p>
+
+      <p>They stepped into the morning together.<br>
+      No rush. No noise.<br>
+      Just two people walking side by side.<br>
+      No promises of forever.<br>
+      No need for them.<br>
+      Just this moment.<br>
+      This quiet, gentle, ten percent of forever.<br>
+      And it was enough.</p>
+
+    </div>
+
+    <!-- FINALE CARD -->
+    <div class="finale-card">
+      <div class="finale-pct">10%</div>
+      <div class="finale-quote">"Ten percent of forever is still forever,<br>if you feel it right."</div>
+      <div class="finale-title">The End</div>
+      <div class="finale-sub">Ten Percent of Forever</div>
+      <div class="finale-attr">Written by AKA</div>
+    </div>
+
+    <div class="chapter-nav">
+      <a href="tpof6.html" class="nav-btn nav-prev">← Previous</a>
+      <a href="index.html" class="nav-btn nav-home">🏠 Library</a>
+    </div>
+  </div>
+
+  <button id="scrollBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+  <script>
+    /* gentle sparks — warm and slow for the finale */
+    var sc=document.getElementById('sparkCanvas'),sctx=sc.getContext('2d'),sparks=[];
+    function resize(){sc.width=window.innerWidth;sc.height=window.innerHeight;}resize();window.addEventListener('resize',resize);
+    function spawnSpark(){sparks.push({x:Math.random()*sc.width,y:sc.height+10,r:Math.random()*1.6+0.5,speedY:-(Math.random()*0.45+0.18),speedX:(Math.random()-0.5)*0.28,opacity:Math.random()*0.3+0.1,flicker:Math.random()*Math.PI*2,flickerSpeed:Math.random()*0.04+0.015});}
+    for(var i=0;i<12;i++){spawnSpark();sparks[sparks.length-1].y=Math.random()*sc.height;}
+    function drawSparks(){sctx.clearRect(0,0,sc.width,sc.height);sparks.forEach((s,i)=>{s.flicker+=s.flickerSpeed;var a=s.opacity*(0.7+Math.sin(s.flicker)*0.3);sctx.save();sctx.globalAlpha=a;sctx.fillStyle='#c9883a';sctx.beginPath();sctx.arc(s.x,s.y,s.r,0,Math.PI*2);sctx.fill();sctx.restore();s.y+=s.speedY;s.x+=s.speedX;if(s.y<-10){sparks.splice(i,1);spawnSpark();}});if(Math.random()<0.04)spawnSpark();requestAnimationFrame(drawSparks);}drawSparks();
+    window.addEventListener('scroll',()=>{var s=window.scrollY,h=document.documentElement.scrollHeight-window.innerHeight;document.getElementById('readingProgress').style.width=(h>0?s/h*100:0)+'%';document.getElementById('scrollBtn').style.display=s>200?'flex':'none';});
+    var fontSize=18;
+    function changeFont(a){if(a===1&&fontSize<26)fontSize+=2;else if(a===-1&&fontSize>14)fontSize-=2;else if(a===0)fontSize=18;document.getElementById('storyBody').style.fontSize=fontSize+'px';document.getElementById('fontDisplay').textContent=fontSize;try{localStorage.setItem('tpof10FontSize',fontSize);}catch(e){}}
+    function toggleFontPanel(){document.getElementById('fontPanel').classList.toggle('open');}
+    document.addEventListener('click',e=>{var b=document.getElementById('fontToggle'),p=document.getElementById('fontPanel');if(!b.contains(e.target)&&!p.contains(e.target))p.classList.remove('open');});
+    function toggleDark(){document.body.classList.toggle('dark');var on=document.body.classList.contains('dark');document.getElementById('themeBtn').textContent=on?'☀️':'🌙';try{localStorage.setItem('darkMode',on?'on':'off');}catch(e){}}
+    try{var r=JSON.parse(localStorage.getItem('tpofRead')||'[]');if(!r.includes('ch10')){r.push('ch10');localStorage.setItem('tpofRead',JSON.stringify(r));}}catch(e){}
+    window.addEventListener('load',()=>{try{if(localStorage.getItem('darkMode')==='on'){document.body.classList.add('dark');document.getElementById('themeBtn').textContent='☀️';}var s=parseInt(localStorage.getItem('tpof10FontSize'));if(s&&s>=14&&s<=26){fontSize=s;document.getElementById('storyBody').style.fontSize=s+'px';document.getElementById('fontDisplay').textContent=s;}}catch(e){}});
+  </script>
+</body>
+</html>
