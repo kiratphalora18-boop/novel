@@ -5,1391 +5,857 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>A Novel Web</title>
   <meta name="description" content="Original fiction by AKA. Romance, drama, and slice-of-life novels updated weekly.">
-  <!-- CSP: blocks inline script injection from external sources -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' fonts.googleapis.com fonts.gstatic.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:;">
-  <meta name="referrer" content="no-referrer">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink: #1a1410;
-      --paper: #f5f0e8;
-      --cream: #ede8dc;
-      --blush: #d4a9a0;
-      --mauve: #9b7b8c;
-      --plum: #5c3d52;
-      --sage: #7a8c75;
-      --gold: #c9a84c;
-      --mist: rgba(245,240,232,0.9);
-      --shadow-sm: 0 2px 12px rgba(92,61,82,0.07), 0 1px 0 rgba(255,255,255,0.9) inset;
-      --shadow-md: 0 8px 32px rgba(92,61,82,0.12), 0 1px 0 rgba(255,255,255,0.9) inset;
-      --shadow-lg: 0 16px 48px rgba(92,61,82,0.16), 0 1px 0 rgba(255,255,255,0.9) inset;
-      --radius-sm: 10px;
-      --radius-md: 16px;
-      --radius-lg: 20px;
-      --transition: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      --paper: #f5f0e8; --cream: #ede8dc; --ink: #1a1410;
+      --mauve: #9b7b8c; --plum: #5c3d52; --blush: #d4a9a0;
+      --sage: #7a8c75; --gold: #c9a84c; --surface: #fff;
+      --border: rgba(26,20,16,0.09); --mist: rgba(245,240,232,0.96);
+      --shadow-sm: 0 2px 12px rgba(92,61,82,0.07);
+      --shadow-md: 0 8px 32px rgba(92,61,82,0.12);
+      --shadow-lg: 0 16px 48px rgba(92,61,82,0.16);
+      --tr: 0.26s cubic-bezier(.4,0,.2,1);
+      --r-sm: 10px; --r-md: 16px; --r-lg: 20px;
     }
-
+    body.dark {
+      --paper: #14100d; --cream: #1e1812; --ink: #f0ebe0;
+      --surface: #1e1812; --border: rgba(255,255,255,0.08);
+      --mist: rgba(20,16,13,0.97); --mauve: #b89aaa; --blush: #a07870;
+      --shadow-sm: 0 2px 12px rgba(0,0,0,0.3);
+      --shadow-md: 0 8px 32px rgba(0,0,0,0.4);
+      --shadow-lg: 0 16px 48px rgba(0,0,0,0.5);
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+    body { background: var(--paper); color: var(--ink); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; transition: background .3s, color .3s; }
 
-    body {
-      background: var(--paper);
-      color: var(--ink);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      overflow-x: hidden;
-    }
+    /* GRAIN */
+    #grain { position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: .45;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); }
 
-    /* Paper grain texture */
-    body::after {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 9999; opacity: 0.5;
-    }
-
-    /* ── DARK MODE ── */
-    body.dark {
-      --ink: #f0ebe0; --paper: #14100d; --cream: #1e1812;
-      --blush: #a07870; --mist: rgba(20,16,13,0.95);
-      --shadow-sm: 0 2px 12px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.04) inset;
-      --shadow-md: 0 8px 32px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.04) inset;
-      --shadow-lg: 0 16px 48px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.04) inset;
-    }
-    body.dark .novel-card          { background: #1e1812; border-color: rgba(255,255,255,0.06); }
-    body.dark .search-wrapper      { background: #1e1812; }
-    body.dark .search-input        { background: transparent; color: var(--ink); }
-    body.dark .search-input::placeholder { color: rgba(240,235,224,0.3); }
-    body.dark .suggestions-box     { background: #1e1812; border-color: rgba(255,255,255,0.08); }
-    body.dark .suggestion-item:hover { background: rgba(255,255,255,0.05); }
-    body.dark .pill                { background: rgba(255,255,255,0.06); color: rgba(240,235,224,0.55); }
-    body.dark .pill.active         { background: var(--plum); color: white; }
-    body.dark .chapter-badge       { background: rgba(255,255,255,0.06); color: rgba(240,235,224,0.45); }
-    body.dark .status-badge.completed { background: rgba(122,140,117,0.2); color: #7a8c75; }
-    body.dark .status-badge.ongoing   { background: rgba(201,168,76,0.15); color: #c9a84c; }
-    body.dark .site-nav            { background: var(--mist); }
-    body.dark .announcement        { background: #1e1812; }
-    body.dark .countdown-box       { background: #1e1812; }
-    body.dark .filter-section      { background: #1e1812; }
-    body.dark .search-wrapper      { background: #1e1812; }
-    body.dark .soon-card           { background: #1e1812; }
-    body.dark .history-item        { color: var(--mauve); }
-    body.dark .suggestions-header  { color: rgba(240,235,224,0.3); border-color: rgba(255,255,255,0.05); }
-    body.dark .s-name              { color: var(--blush); }
-    body.dark .filter-label        { color: rgba(240,235,224,0.3); }
-    body.dark .comment-box         { background: #1e1812; border-color: rgba(255,255,255,0.06); }
-    body.dark .comment-card        { background: #1e1812; border-color: rgba(255,255,255,0.06); }
-    body.dark .comment-input,
-    body.dark .comment-textarea    { background: #252018; border-color: rgba(255,255,255,0.08); color: var(--ink); }
-    body.dark .comment-input::placeholder,
-    body.dark .comment-textarea::placeholder { color: rgba(240,235,224,0.22); }
-    body.dark .comment-like-btn    { border-color: rgba(255,255,255,0.1); }
-    body.dark .delete-confirm-box  { background: rgba(176,84,106,0.08); }
-    body.dark .hero-line           { border-color: rgba(255,255,255,0.08); }
+    /* ── SETTINGS OVERLAY & PANEL ── */
+    .settings-overlay { position: fixed; inset: 0; background: rgba(26,20,16,.35); z-index: 200; opacity: 0; pointer-events: none; transition: opacity .28s; backdrop-filter: blur(4px); }
+    .settings-overlay.open { opacity: 1; pointer-events: all; }
+    .settings-panel { position: fixed; top: 0; right: 0; bottom: 0; width: 300px; background: var(--surface); border-left: 1px solid var(--border); z-index: 201; transform: translateX(100%); transition: transform .32s cubic-bezier(.4,0,.2,1); display: flex; flex-direction: column; }
+    .settings-panel.open { transform: translateX(0); }
+    .sp-header { padding: 22px 22px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .sp-title { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--plum); }
+    .sp-body { flex: 1; overflow-y: auto; padding: 20px 22px; }
+    .sp-section { margin-bottom: 24px; }
+    .sp-section-label { font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: var(--mauve); margin-bottom: 12px; display: block; }
+    .sp-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .sp-row:last-child { border-bottom: none; }
+    .sp-row-label { font-size: 13px; color: var(--ink); }
+    .sp-row-sub { font-size: 10px; color: var(--mauve); opacity: .6; margin-top: 2px; }
+    .toggle { width: 42px; height: 24px; background: rgba(26,20,16,.12); border-radius: 12px; position: relative; cursor: pointer; transition: background var(--tr); border: none; flex-shrink: 0; }
+    .toggle.on { background: var(--plum); }
+    .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: white; transition: transform var(--tr); box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+    .toggle.on::after { transform: translateX(18px); }
+    .sp-select { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--ink); cursor: pointer; outline: none; }
+    .font-control { display: flex; align-items: center; gap: 8px; }
+    .fc-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); background: var(--cream); color: var(--ink); cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: all var(--tr); }
+    .fc-btn:hover { background: var(--surface); border-color: var(--mauve); }
+    .fc-val { font-size: 12px; color: var(--mauve); min-width: 28px; text-align: center; }
+    .accent-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ap-dot { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all var(--tr); }
+    .ap-dot.selected { border-color: var(--ink); transform: scale(1.15); }
+    .ap-dot:hover { transform: scale(1.1); }
 
     /* ── NAV ── */
-    .site-nav {
-      position: sticky; top: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 40px; height: 64px;
-      background: var(--mist); backdrop-filter: blur(24px) saturate(1.8);
-      -webkit-backdrop-filter: blur(24px) saturate(1.8);
-      border-bottom: 1px solid rgba(26,20,16,0.07);
-      transition: background var(--transition), box-shadow var(--transition);
-      box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 4px 20px rgba(92,61,82,0.06);
-    }
-    .site-nav.scrolled { box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 8px 32px rgba(92,61,82,0.12); }
-    .nav-brand {
-      font-family: 'DM Serif Display', serif; font-size: 20px;
-      letter-spacing: 0.04em; color: var(--plum);
-      transition: color var(--transition);
-    }
+    .site-nav { position: sticky; top: 0; z-index: 100; height: 60px; background: var(--mist); backdrop-filter: blur(24px) saturate(1.8); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; transition: background var(--tr), box-shadow var(--tr); }
+    .site-nav.scrolled { box-shadow: 0 8px 32px rgba(92,61,82,.1); }
+    .nav-brand { font-family: 'DM Serif Display', serif; font-size: 19px; color: var(--plum); letter-spacing: .04em; }
     .nav-brand span { font-style: italic; color: var(--mauve); }
-    .theme-btn {
-      background: none; border: 1px solid rgba(26,20,16,0.12);
-      border-radius: 50%; width: 36px; height: 36px;
-      cursor: pointer; font-size: 15px;
-      display: flex; align-items: center; justify-content: center;
-      transition: all var(--transition); color: var(--ink);
-      box-shadow: var(--shadow-sm);
-    }
-    .theme-btn:hover { background: var(--cream); transform: scale(1.08) rotate(15deg); box-shadow: var(--shadow-md); }
-    .theme-btn:active { transform: scale(0.95); }
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+    .icon-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--cream); color: var(--ink); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: all var(--tr); }
+    .icon-btn:hover { transform: scale(1.08); background: var(--surface); }
+    .icon-btn:active { transform: scale(.95); }
 
     /* ── ANNOUNCEMENT ── */
-    .announcement {
-      background: var(--cream); border-bottom: 1px solid rgba(26,20,16,0.06);
-      padding: 9px 40px; display: flex; align-items: center;
-      justify-content: space-between; gap: 16px;
-      font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mauve);
-      overflow: hidden; transition: all 0.5s cubic-bezier(0.4,0,0.2,1);
-    }
-    .announcement-track { overflow: hidden; flex: 1; }
-    .announcement-scroll {
-      white-space: nowrap; display: inline-block;
-      animation: ticker 24s linear infinite; font-weight: 500;
-    }
-    .announcement-scroll em { font-style: normal; color: var(--plum); }
+    .announcement { background: var(--cream); border-bottom: 1px solid rgba(26,20,16,.06); padding: 9px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--mauve); overflow: hidden; transition: all .5s cubic-bezier(.4,0,.2,1); }
+    body.dark .announcement { background: #1e1812; }
+    .ann-track { overflow: hidden; flex: 1; }
+    .ann-scroll { white-space: nowrap; display: inline-block; animation: ticker 24s linear infinite; font-weight: 500; }
+    .ann-scroll em { font-style: normal; color: var(--plum); }
     @keyframes ticker { 0% { transform: translateX(60vw); } 100% { transform: translateX(-100%); } }
-    .ann-close {
-      cursor: pointer; font-size: 14px; color: var(--mauve);
-      opacity: 0.4; flex-shrink: 0; transition: opacity var(--transition), transform var(--transition);
-      line-height: 1; padding: 4px;
-    }
+    .ann-close { cursor: pointer; font-size: 14px; color: var(--mauve); opacity: .4; flex-shrink: 0; transition: opacity var(--tr), transform var(--tr); padding: 4px; }
     .ann-close:hover { opacity: 1; transform: rotate(90deg); }
 
     /* ── HERO ── */
-    .hero {
-      padding: 60px 40px 40px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
-      align-items: center; max-width: 1100px; margin: 0 auto;
-    }
-    .hero-eyebrow {
-      font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
-      color: var(--mauve); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
-    }
-    .hero-eyebrow::before { content: ''; display: block; width: 20px; height: 1px; background: var(--blush); }
-    .hero-title {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(42px, 6vw, 72px); line-height: 1.0; color: var(--plum); margin-bottom: 12px;
-    }
+    .hero { max-width: 1060px; margin: 0 auto; padding: 52px 32px 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+    .hero-eyebrow { font-size: 10px; letter-spacing: .28em; text-transform: uppercase; color: var(--mauve); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .hero-eyebrow::before { content: ''; width: 18px; height: 1px; background: var(--blush); }
+    .hero-title { font-family: 'DM Serif Display', serif; font-size: clamp(38px,5.5vw,64px); line-height: 1.0; color: var(--plum); margin-bottom: 12px; }
     .hero-title em { font-style: italic; color: var(--mauve); }
-    .hero-sub { font-size: 14px; line-height: 1.75; color: var(--mauve); max-width: 320px; margin-bottom: 28px; }
-    .hero-line { width: 50px; height: 1px; background: var(--blush); margin-bottom: 20px; }
-    .hero-stats { display: flex; gap: 32px; }
-    .stat { display: flex; flex-direction: column; gap: 2px; }
-    .stat-num {
-      font-family: 'Cormorant Garamond', serif; font-size: 32px;
-      font-weight: 300; color: var(--plum); line-height: 1;
-      transition: color var(--transition);
-    }
-    .stat-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mauve); }
+    .hero-sub { font-size: 13.5px; line-height: 1.75; color: var(--mauve); max-width: 300px; margin-bottom: 24px; }
+    .hero-line { width: 44px; height: 1px; background: var(--blush); margin-bottom: 18px; }
+    .hero-stats { display: flex; gap: 28px; }
+    .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 300; color: var(--plum); line-height: 1; }
+    .stat-label { font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--mauve); }
 
-    /* ── COUNTDOWN ── */
-    .hero-countdown { display: flex; flex-direction: column; gap: 14px; }
-    .countdown-box {
-      background: var(--cream); border: 1px solid rgba(26,20,16,0.07);
-      border-radius: var(--radius-lg); padding: 32px 28px; position: relative; overflow: hidden;
-      box-shadow: var(--shadow-md);
-      transition: transform var(--transition), box-shadow var(--transition);
-    }
-    .countdown-box:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-    .countdown-box::before {
-      content: ''; position: absolute; top: -50px; right: -50px;
-      width: 200px; height: 200px;
-      background: radial-gradient(circle, rgba(212,169,160,0.25), transparent 70%);
-      pointer-events: none;
-    }
-    .countdown-label-top { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mauve); margin-bottom: 18px; }
-    .countdown-display { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
-    .cd-unit { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .cd-num {
-      font-family: 'Cormorant Garamond', serif; font-size: 50px; font-weight: 300;
-      line-height: 1; color: var(--plum); min-width: 58px; text-align: center;
-      transition: color 0.15s;
-    }
-    .cd-num.tick { animation: cdTick 0.15s ease; }
-    @keyframes cdTick { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(0.88); opacity: 0.7; } }
-    .cd-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mauve); }
-    .cd-colon {
-      font-family: 'Cormorant Garamond', serif; font-size: 38px; color: var(--blush);
-      line-height: 1; padding-top: 8px; opacity: 0.5;
-      animation: blink 1s step-end infinite;
-    }
-    @keyframes blink { 0%,100% { opacity: 0.5; } 50% { opacity: 0.15; } }
-    .countdown-title { margin-top: 14px; font-family: 'DM Serif Display', serif; font-size: 15px; font-style: italic; color: var(--plum); opacity: 0.7; }
-    .released-msg { display: none; font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--plum); font-style: italic; }
+    /* COUNTDOWN */
+    .countdown-card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 28px 24px; position: relative; overflow: hidden; box-shadow: var(--shadow-md); transition: transform var(--tr), box-shadow var(--tr); }
+    body.dark .countdown-card { background: #1e1812; }
+    .countdown-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .countdown-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; background: radial-gradient(circle, rgba(212,169,160,.22), transparent 70%); pointer-events: none; }
+    .cd-label { font-size: 9.5px; letter-spacing: .28em; text-transform: uppercase; color: var(--mauve); margin-bottom: 14px; }
+    .cd-row { display: flex; gap: 8px; align-items: flex-start; }
+    .cd-unit { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .cd-num { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 300; color: var(--plum); min-width: 52px; text-align: center; line-height: 1; }
+    .cd-num.tick { animation: cdTick .15s ease; }
+    @keyframes cdTick { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(.88); opacity: .7; } }
+    .cd-colon { font-family: 'Cormorant Garamond', serif; font-size: 34px; color: var(--blush); padding-top: 7px; opacity: .5; animation: blink 1s step-end infinite; }
+    @keyframes blink { 0%,100% { opacity: .5; } 50% { opacity: .12; } }
+    .cd-sublabel { font-size: 8.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--mauve); }
+    .cd-title { margin-top: 12px; font-family: 'DM Serif Display', serif; font-size: 14px; font-style: italic; color: var(--plum); opacity: .65; }
 
-    /* ── SOON CARD ── */
-    .soon-card {
-      background: var(--cream); border: 1px solid rgba(26,20,16,0.07);
-      border-radius: var(--radius-md); padding: 18px 22px; display: flex; align-items: center; gap: 16px;
-      box-shadow: var(--shadow-sm);
-      transition: transform var(--transition), box-shadow var(--transition);
-    }
-    .soon-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-    .soon-cover {
-      width: 48px; height: 68px; border-radius: 6px;
-      background: linear-gradient(135deg, var(--mauve), var(--blush));
-      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-      font-size: 8px; color: white; text-align: center; padding: 4px;
-      font-family: 'Cormorant Garamond', serif; font-style: italic; line-height: 1.3;
-      box-shadow: 2px 4px 12px rgba(92,61,82,0.28);
-    }
-    .soon-info { flex: 1; }
-    .soon-eyebrow { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--mauve); margin-bottom: 4px; }
-    .soon-title { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--plum); font-style: italic; }
-    .soon-badge { font-size: 10px; background: rgba(155,123,140,0.12); color: var(--mauve); padding: 3px 10px; border-radius: 20px; margin-top: 6px; display: inline-block; letter-spacing: 0.08em; }
+    /* ── CAROUSEL (UPDATES) ── */
+    .updates-section { max-width: 1060px; margin: 0 auto; padding: 0 32px 40px; }
+    .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; padding-bottom: 11px; border-bottom: 1px solid var(--border); }
+    .section-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--plum); }
+    .section-count { font-size: 11px; color: var(--mauve); opacity: .45; letter-spacing: .1em; }
 
-    /* ── SEARCH ── */
-    .search-section { max-width: 1100px; margin: 0 auto; padding: 0 40px 22px; }
-    .search-wrapper {
-      display: flex; align-items: center; background: white;
-      border: 1px solid rgba(26,20,16,0.09); border-radius: 50px;
-      padding: 6px 6px 6px 20px;
-      box-shadow: var(--shadow-sm);
-      transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
+    .carousel-outer { display: flex; align-items: center; gap: 12px; position: relative; user-select: none; }
+    .carousel-nav-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--cream); color: var(--ink); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: all var(--tr); flex-shrink: 0; box-shadow: var(--shadow-sm); }
+    body.dark .carousel-nav-btn { background: #1e1812; }
+    .carousel-nav-btn:hover { background: var(--surface); border-color: var(--mauve); transform: scale(1.08); }
+    .carousel-nav-btn:disabled { opacity: .3; cursor: default; transform: none; }
+
+    .carousel-container { position: relative; overflow: hidden; border: 1px solid rgba(26,20,16,.1); border-radius: 22px; padding: 16px; flex: 1; background: var(--cream); box-shadow: var(--shadow-sm); }
+    body.dark .carousel-container { background: #1e1812; border-color: rgba(255,255,255,.08); }
+    .carousel-track { display: flex; gap: 16px; cursor: grab; transition: transform .38s cubic-bezier(.4,0,.2,1); will-change: transform; }
+    .carousel-track.dragging { cursor: grabbing; transition: none; }
+
+    .carousel-card { flex-shrink: 0; background: var(--surface); border: 1px solid rgba(26,20,16,.08); border-radius: 14px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; transition: transform var(--tr), box-shadow var(--tr); height: 200px; }
+    body.dark .carousel-card { background: #252018; border-color: rgba(255,255,255,.07); }
+    .carousel-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .carousel-card-header { padding: 18px 18px 12px; }
+    .carousel-card-icon { width: 34px; height: 34px; border-radius: 50%; background: var(--plum); display: flex; align-items: center; justify-content: center; font-size: 16px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(92,61,82,.28); }
+    .carousel-card-date { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--mauve); opacity: .6; }
+    .carousel-card-content { padding: 0 18px 18px; }
+    .carousel-card-title { font-family: 'DM Serif Display', serif; font-size: 15px; color: var(--ink); margin-bottom: 5px; line-height: 1.2; }
+    .carousel-card-desc { font-size: 11.5px; color: var(--mauve); line-height: 1.55; opacity: .8; }
+    .carousel-card-tag { display: inline-block; font-size: 9.5px; padding: 2px 9px; border-radius: 50px; margin-top: 8px; letter-spacing: .04em; }
+    .tag-new { background: rgba(122,140,117,.12); color: var(--sage); }
+    .tag-update { background: rgba(201,168,76,.12); color: #9a7f30; }
+    .tag-coming { background: rgba(155,123,140,.12); color: var(--mauve); }
+
+    .carousel-dots { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
+    .carousel-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(26,20,16,.15); cursor: pointer; transition: all var(--tr); border: none; }
+    body.dark .carousel-dot { background: rgba(255,255,255,.18); }
+    .carousel-dot.active { background: var(--plum); transform: scale(1.25); }
+
+    /* ── LIBRARY + SIDEBAR ── */
+    .library-wrap { max-width: 1060px; margin: 0 auto; padding: 0 32px 60px; display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: start; }
+
+    /* ANIMATED LIST */
+    .al-container { position: relative; }
+    .al-scroll { max-height: 500px; overflow-y: auto; padding-right: 2px; }
+    .al-scroll::-webkit-scrollbar { width: 4px; }
+    .al-scroll::-webkit-scrollbar-track { background: transparent; }
+    .al-scroll::-webkit-scrollbar-thumb { background: var(--blush); border-radius: 2px; }
+    .al-grad-top { position: absolute; top: 0; left: 0; right: 0; height: 50px; background: linear-gradient(to bottom, var(--paper), transparent); pointer-events: none; transition: opacity .3s; z-index: 2; }
+    .al-grad-bot { position: absolute; bottom: 0; left: 0; right: 0; height: 80px; background: linear-gradient(to top, var(--paper), transparent); pointer-events: none; z-index: 2; }
+    body.dark .al-grad-top { background: linear-gradient(to bottom, var(--paper), transparent); }
+    body.dark .al-grad-bot { background: linear-gradient(to top, var(--paper), transparent); }
+
+    .novel-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); padding: 15px 18px; display: flex; align-items: center; gap: 16px; cursor: pointer; text-decoration: none; color: inherit; transition: transform var(--tr), box-shadow var(--tr), border-color var(--tr); position: relative; overflow: hidden; margin-bottom: 9px; opacity: 0; animation: cardIn .45s cubic-bezier(.4,0,.2,1) forwards; }
+    body.dark .novel-item { background: #1e1812; }
+    .novel-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--blush), var(--mauve)); opacity: 0; transition: opacity var(--tr); }
+    .novel-item:hover, .novel-item.selected { border-color: rgba(92,61,82,.18); box-shadow: var(--shadow-md); transform: translateY(-3px) scale(1.003); }
+    .novel-item:hover::before, .novel-item.selected::before { opacity: 1; }
+    .novel-item:active { transform: translateY(-1px); }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .novel-item:nth-child(1){animation-delay:.04s} .novel-item:nth-child(2){animation-delay:.08s}
+    .novel-item:nth-child(3){animation-delay:.12s} .novel-item:nth-child(4){animation-delay:.16s}
+    .novel-item:nth-child(5){animation-delay:.20s} .novel-item:nth-child(6){animation-delay:.24s}
+    .novel-item:nth-child(7){animation-delay:.28s} .novel-item:nth-child(8){animation-delay:.32s}
+    .novel-item:nth-child(9){animation-delay:.36s}
+
+    /* ── COVER PLACEHOLDER & IMAGE ── */
+    .cover-ph {
+      width: 58px;
+      height: 84px;
+      border-radius: 6px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 8px;
+      color: white;
+      text-align: center;
+      padding: 0;
+      line-height: 1.3;
+      box-shadow: 3px 5px 12px rgba(26,20,16,.2);
+      transition: transform var(--tr);
+      overflow: hidden;
       position: relative;
     }
-    .search-wrapper:focus-within {
-      border-color: rgba(155,123,140,0.5);
-      box-shadow: 0 8px 32px rgba(92,61,82,0.14), 0 0 0 3px rgba(155,123,140,0.1), 0 1px 0 rgba(255,255,255,0.8) inset;
-      transform: translateY(-1px);
-    }
-    .search-icon-inner { font-size: 14px; opacity: 0.3; flex-shrink: 0; margin-right: 10px; }
-    .search-input {
-      flex: 1; border: none; outline: none;
-      font-family: 'DM Sans', sans-serif; font-size: 14px;
-      font-weight: 300; background: transparent; color: var(--ink);
-    }
-    .search-input::placeholder { color: rgba(26,20,16,0.28); }
-    .search-btn {
-      background: var(--plum); color: white; border: none; border-radius: 50px;
-      padding: 10px 24px; font-family: 'DM Sans', sans-serif;
-      font-size: 13px; cursor: pointer; letter-spacing: 0.04em;
-      transition: all var(--transition); flex-shrink: 0;
-      box-shadow: 0 3px 10px rgba(92,61,82,0.28);
-    }
-    .search-btn:hover { background: var(--mauve); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(92,61,82,0.36); }
-    .search-btn:active { transform: translateY(0); }
-    .clear-btn {
-      background: none; border: none; cursor: pointer; font-size: 14px;
-      color: rgba(26,20,16,0.22); padding: 0 8px; display: none;
-      transition: color var(--transition), transform var(--transition);
-      line-height: 1;
-    }
-    .clear-btn:hover { color: var(--mauve); transform: scale(1.2); }
+    .novel-item:hover .cover-ph { transform: scale(1.07) rotate(-1.5deg); }
 
-    /* ── SUGGESTIONS ── */
-    .suggestions-box {
-      position: absolute; top: calc(100% + 10px); left: 0; right: 0;
-      background: white; border: 1px solid rgba(26,20,16,0.08); border-radius: var(--radius-md);
-      box-shadow: 0 20px 60px rgba(26,20,16,0.14); z-index: 50; display: none; overflow: hidden;
-      animation: suggestionsDrop 0.2s cubic-bezier(0.4,0,0.2,1);
+    /* Real cover image */
+    .cover-ph img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
+      display: block;
+      transition: opacity .3s;
     }
-    @keyframes suggestionsDrop { from { opacity:0; transform:translateY(-8px) scale(0.98); } to { opacity:1; transform:translateY(0) scale(1); } }
-    .suggestions-header {
-      font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
-      color: rgba(26,20,16,0.3); padding: 10px 18px 6px;
-      border-bottom: 1px solid rgba(26,20,16,0.05);
-    }
-    .suggestion-item {
-      display: flex; align-items: center; gap: 12px; padding: 10px 18px;
-      cursor: pointer; transition: background var(--transition);
-    }
-    .suggestion-item:hover { background: rgba(212,169,160,0.08); }
-    .s-name { font-size: 14px; color: var(--plum); font-family: 'Cormorant Garamond', serif; font-style: italic; flex: 1; }
-    .s-tags { font-size: 11px; color: var(--mauve); opacity: 0.65; }
-    .s-status { font-size: 10px; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.05em; }
-    .s-status.ongoing   { background: rgba(201,168,76,0.12); color: #9a7f30; }
-    .s-status.completed { background: rgba(122,140,117,0.12); color: var(--sage); }
-    .s-status.releasing { background: rgba(155,123,140,0.12); color: var(--mauve); }
-    .history-item {
-      display: flex; align-items: center; gap: 10px; padding: 9px 18px;
-      font-size: 13px; color: var(--mauve); cursor: pointer;
-      transition: background var(--transition);
-    }
-    .history-item:hover { background: rgba(212,169,160,0.08); }
-    .history-remove { margin-left: auto; font-size: 12px; opacity: 0.28; transition: opacity var(--transition); }
-    .history-remove:hover { opacity: 0.7; color: var(--blush); }
 
-    /* ── FILTERS ── */
-    .filter-section {
-      background: var(--cream); border: 1px solid rgba(26,20,16,0.06);
-      border-radius: 50px; padding: 9px 18px;
-      display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px;
-      box-shadow: 0 2px 10px rgba(92,61,82,0.05), 0 1px 0 rgba(255,255,255,0.8) inset;
+    /* Fallback text shown when no image */
+    .cover-ph .cover-fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 8px;
+      color: white;
+      text-align: center;
+      line-height: 1.3;
     }
-    .filter-group { display: flex; align-items: center; gap: 5px; }
-    .filter-divider-v { width: 1px; height: 18px; background: rgba(26,20,16,0.09); flex-shrink: 0; }
-    .filter-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(26,20,16,0.32); flex-shrink: 0; }
-    .pill {
-      padding: 5px 13px; border-radius: 50px; font-size: 11.5px;
-      font-family: 'DM Sans', sans-serif;
-      background: rgba(26,20,16,0.05); color: rgba(26,20,16,0.5);
-      border: none; cursor: pointer; transition: all var(--transition);
-      letter-spacing: 0.02em; white-space: nowrap;
-    }
-    .pill:hover { background: rgba(26,20,16,0.09); color: var(--plum); transform: translateY(-1px); }
-    .pill:active { transform: translateY(0); }
-    .pill.active { background: var(--plum); color: white; box-shadow: 0 2px 8px rgba(92,61,82,0.28); }
-    .pill.romance.active { background: #b0546a; }
-    .pill.drama.active   { background: var(--plum); }
-    .pill.slice.active   { background: var(--sage); }
-    .pill.sad.active     { background: #5f7489; }
-    .pill.mystery.active { background: #614d7a; }
-    .pill.action.active  { background: #8b3030; }
-    .results-count { font-size: 11px; color: var(--mauve); opacity: 0.55; padding: 0 4px; letter-spacing: 0.05em; }
 
-    /* ── MAIN ── */
-    .main-grid { max-width: 1100px; margin: 0 auto; padding: 8px 40px 60px; }
-    .section-header {
-      display: flex; align-items: baseline; justify-content: space-between;
-      margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid rgba(26,20,16,0.07);
-    }
-    .section-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--plum); }
-    .section-count { font-size: 11px; color: var(--mauve); opacity: 0.45; letter-spacing: 0.1em; }
-
-    /* ── NOVEL CARDS ── */
-    .novel-list { display: flex; flex-direction: column; gap: 10px; }
-    .novel-card {
-      background: white; border: 1px solid rgba(26,20,16,0.07);
-      border-radius: var(--radius-md); padding: 18px 20px;
-      display: flex; align-items: center; gap: 20px;
-      cursor: pointer; transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
-      text-decoration: none; color: inherit; position: relative; overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      will-change: transform;
-    }
-    .novel-card::before {
-      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-      background: linear-gradient(180deg, var(--blush), var(--mauve));
-      opacity: 0; transition: opacity var(--transition);
-    }
-    .novel-card:hover {
-      border-color: rgba(92,61,82,0.13);
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-4px) scale(1.004);
-    }
-    .novel-card:hover::before { opacity: 1; }
-    .novel-card:active { transform: translateY(-1px) scale(1.001); box-shadow: var(--shadow-sm); }
-    .novel-card.hidden { display: none; }
-
-    /* Staggered fade-in */
-    .novel-card { opacity: 0; animation: cardReveal 0.5s cubic-bezier(0.4,0,0.2,1) forwards; }
-    @keyframes cardReveal {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .novel-card:nth-child(1) { animation-delay: 0.05s; }
-    .novel-card:nth-child(2) { animation-delay: 0.10s; }
-    .novel-card:nth-child(3) { animation-delay: 0.15s; }
-    .novel-card:nth-child(4) { animation-delay: 0.20s; }
-    .novel-card:nth-child(5) { animation-delay: 0.25s; }
-    .novel-card:nth-child(6) { animation-delay: 0.30s; }
-    .novel-card:nth-child(7) { animation-delay: 0.35s; }
-    .novel-card:nth-child(8) { animation-delay: 0.40s; }
-
-    .cover-img {
-      width: 70px; height: 100px; border-radius: 7px; object-fit: cover;
-      box-shadow: 3px 5px 14px rgba(26,20,16,0.2); flex-shrink: 0;
-      transition: transform var(--transition), box-shadow var(--transition);
-    }
-    .novel-card:hover .cover-img { transform: scale(1.07) rotate(-2deg); box-shadow: 6px 10px 22px rgba(26,20,16,0.28); }
-    .cover-placeholder {
-      width: 70px; height: 100px; border-radius: 7px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Cormorant Garamond', serif; font-style: italic;
-      font-size: 9px; color: white; text-align: center; padding: 8px; line-height: 1.3;
-      box-shadow: 3px 5px 14px rgba(26,20,16,0.2);
-      transition: transform var(--transition);
-    }
-    .novel-card:hover .cover-placeholder { transform: scale(1.07) rotate(-2deg); }
     .novel-info { flex: 1; min-width: 0; }
-    .novel-title {
-      font-family: 'Cormorant Garamond', serif; font-size: 20px;
-      font-style: italic; color: var(--plum); margin-bottom: 8px;
-      line-height: 1.2; transition: color var(--transition);
-    }
-    .novel-card:hover .novel-title { color: var(--mauve); }
-    .novel-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
-    .genre-tag { font-size: 10px; padding: 3px 10px; border-radius: 50px; letter-spacing: 0.04em; }
-    .genre-tag.romance { background: rgba(176,84,106,0.09); color: #b0546a; }
-    .genre-tag.drama   { background: rgba(92,61,82,0.09); color: var(--plum); }
-    .genre-tag.slice   { background: rgba(122,140,117,0.11); color: var(--sage); }
-    .genre-tag.sad     { background: rgba(95,116,137,0.09); color: #5f7489; }
-    .genre-tag.mystery { background: rgba(97,77,122,0.09); color: #614d7a; }
-    .genre-tag.action  { background: rgba(139,48,48,0.09); color: #8b3030; }
-    .status-badge { font-size: 10px; padding: 3px 10px; border-radius: 50px; letter-spacing: 0.04em; font-weight: 500; }
-    .status-badge.ongoing   { background: rgba(201,168,76,0.11); color: #9a7f30; }
-    .status-badge.completed { background: rgba(122,140,117,0.11); color: var(--sage); }
-    .status-badge.releasing { background: rgba(155,123,140,0.11); color: var(--mauve); }
-    .chapter-badge { font-size: 10px; padding: 3px 10px; border-radius: 50px; background: rgba(26,20,16,0.05); color: rgba(26,20,16,0.38); }
-    .novel-byline { font-size: 11px; color: var(--mauve); opacity: 0.45; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px; }
-    .novel-arrow {
-      font-size: 18px; color: var(--blush); opacity: 0;
-      transition: all var(--transition); flex-shrink: 0;
-      transform: translateX(-10px);
-    }
-    .novel-card:hover .novel-arrow { opacity: 1; transform: translateX(0); }
+    .novel-title-t { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-style: italic; color: var(--plum); margin-bottom: 6px; line-height: 1.2; transition: color var(--tr); }
+    .novel-item:hover .novel-title-t, .novel-item.selected .novel-title-t { color: var(--mauve); }
+    .novel-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 5px; }
+    .badge { font-size: 9.5px; padding: 2px 9px; border-radius: 50px; letter-spacing: .04em; }
+    .b-romance{background:rgba(176,84,106,.09);color:#b0546a} .b-drama{background:rgba(92,61,82,.09);color:var(--plum)}
+    .b-slice{background:rgba(122,140,117,.11);color:var(--sage)} .b-sad{background:rgba(95,116,137,.09);color:#5f7489}
+    .b-mystery{background:rgba(97,77,122,.09);color:#614d7a} .b-action{background:rgba(139,48,48,.09);color:#8b3030}
+    .b-ongoing{background:rgba(201,168,76,.11);color:#9a7f30;font-weight:500}
+    .b-completed{background:rgba(122,140,117,.11);color:var(--sage);font-weight:500}
+    .b-soon{background:rgba(155,123,140,.11);color:var(--mauve);font-weight:500}
+    .b-ch{background:rgba(26,20,16,.05);color:rgba(26,20,16,.38)}
+    .novel-byline { font-size: 10px; color: var(--mauve); opacity: .42; letter-spacing: .1em; text-transform: uppercase; }
+    .novel-arrow { font-size: 16px; color: var(--blush); opacity: 0; transition: all var(--tr); transform: translateX(-8px); flex-shrink: 0; }
+    .novel-item:hover .novel-arrow { opacity: 1; transform: translateX(0); }
 
-    /* ── COMMENT SECTION ── */
-    .comment-section-wrap { max-width: 1100px; margin: 0 auto 60px; padding: 0 40px; }
+    /* ── SIDEBAR ── */
+    .sidebar { display: flex; flex-direction: column; gap: 14px; position: sticky; top: 72px; }
+    .sidebar-card { background: var(--cream); border: 1px solid var(--border); border-radius: var(--r-md); padding: 20px 18px; }
+    body.dark .sidebar-card { background: #1e1812; }
+    .sb-label { font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: var(--mauve); margin-bottom: 10px; display: block; }
+    .sb-title { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-style: italic; color: var(--plum); margin-bottom: 3px; }
+    .sb-sub { font-size: 11px; color: var(--mauve); opacity: .55; }
+    .search-bar { display: flex; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 50px; padding: 7px 7px 7px 15px; gap: 8px; transition: border-color var(--tr), box-shadow var(--tr); }
+    .search-bar:focus-within { border-color: rgba(155,123,140,.5); box-shadow: 0 0 0 3px rgba(155,123,140,.1); }
+    .search-bar input { flex: 1; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; background: transparent; color: var(--ink); }
+    .search-bar input::placeholder { color: rgba(26,20,16,.28); }
+    body.dark .search-bar input::placeholder { color: rgba(240,235,224,.25); }
+    .search-btn-i { background: var(--plum); color: white; border: none; border-radius: 50px; padding: 7px 15px; font-size: 12px; cursor: pointer; transition: all var(--tr); }
+    .search-btn-i:hover { background: var(--mauve); transform: translateY(-1px); }
+    .pills { display: flex; flex-wrap: wrap; gap: 5px; }
+    .pill { padding: 4px 12px; border-radius: 50px; font-size: 11px; background: rgba(26,20,16,.05); color: rgba(26,20,16,.5); border: none; cursor: pointer; transition: all var(--tr); white-space: nowrap; font-family: 'DM Sans', sans-serif; }
+    body.dark .pill { background: rgba(255,255,255,.06); color: rgba(240,235,224,.55); }
+    .pill:hover { background: rgba(26,20,16,.09); color: var(--plum); transform: translateY(-1px); }
+    .pill.active { background: var(--plum); color: white; box-shadow: 0 2px 8px rgba(92,61,82,.28); }
 
-    .comment-box {
-      background: var(--cream); border: 1px solid rgba(26,20,16,0.07);
-      border-radius: var(--radius-lg); padding: 26px;
-      margin-bottom: 22px; box-shadow: var(--shadow-md);
-      transition: transform var(--transition);
-    }
-    .comment-box:hover { transform: translateY(-2px); }
-    .comment-box-title {
-      font-family: 'DM Serif Display', serif; font-size: 15px;
-      color: var(--plum); margin-bottom: 15px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .comment-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
-    .comment-input {
-      flex: 1; min-width: 140px; padding: 10px 15px;
-      border: 1px solid rgba(26,20,16,0.09); border-radius: var(--radius-sm);
-      font-family: 'DM Sans', sans-serif; font-size: 13px;
-      background: white; color: var(--ink); outline: none;
-      transition: border-color var(--transition), box-shadow var(--transition);
-    }
-    .comment-input:focus { border-color: var(--mauve); box-shadow: 0 0 0 3px rgba(155,123,140,0.1); }
-    .comment-input::placeholder { color: rgba(26,20,16,0.27); }
-    .comment-textarea {
-      width: 100%; min-height: 88px; resize: vertical; padding: 12px 15px;
-      border: 1px solid rgba(26,20,16,0.09); border-radius: var(--radius-sm);
-      font-family: 'DM Sans', sans-serif; font-size: 13px; line-height: 1.65;
-      background: white; color: var(--ink); outline: none;
-      transition: border-color var(--transition), box-shadow var(--transition);
-      margin-bottom: 10px;
-    }
-    .comment-textarea:focus { border-color: var(--mauve); box-shadow: 0 0 0 3px rgba(155,123,140,0.1); }
-    .comment-textarea::placeholder { color: rgba(26,20,16,0.27); }
-    .char-count { font-size: 10px; color: var(--mauve); opacity: 0.5; text-align: right; margin-top: -6px; margin-bottom: 10px; letter-spacing: 0.05em; }
-    .char-count.warn { color: #b0546a; opacity: 0.8; }
-    .comment-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-    .comment-note { font-size: 11px; color: var(--mauve); opacity: 0.55; letter-spacing: 0.02em; }
-    .comment-submit {
-      background: var(--plum); color: white; border: none; border-radius: 50px;
-      padding: 10px 26px; font-family: 'DM Sans', sans-serif; font-size: 13px;
-      cursor: pointer; letter-spacing: 0.04em;
-      transition: all var(--transition);
-      box-shadow: 0 4px 12px rgba(92,61,82,0.28);
-    }
-    .comment-submit:hover { background: var(--mauve); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(92,61,82,0.36); }
-    .comment-submit:active { transform: translateY(0); }
-
-    /* ── COMMENT CARDS ── */
-    .comments-list { display: flex; flex-direction: column; gap: 10px; }
-
-    .comment-card {
-      background: white; border: 1px solid rgba(26,20,16,0.07);
-      border-radius: var(--radius-md); padding: 18px;
-      transition: transform var(--transition), box-shadow var(--transition);
-      position: relative; overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      animation: commentIn 0.38s cubic-bezier(0.4,0,0.2,1) both;
-    }
-    @keyframes commentIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .comment-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-    .comment-card::before {
-      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-      background: linear-gradient(180deg, var(--blush), var(--mauve));
-    }
-    .comment-card.deleting {
-      animation: commentOut 0.32s cubic-bezier(0.4,0,1,1) forwards;
-    }
-    @keyframes commentOut {
-      to { opacity: 0; transform: scale(0.97) translateY(-8px); max-height: 0; padding: 0; margin: 0; border-width: 0; }
-    }
-
-    .comment-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-    .comment-avatar {
-      width: 34px; height: 34px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 600; color: white; flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(92,61,82,0.22);
-    }
-    .comment-meta { flex: 1; }
-    .comment-name { font-size: 13px; font-weight: 500; color: var(--plum); }
-    .comment-time { font-size: 10px; color: var(--mauve); opacity: 0.55; letter-spacing: 0.04em; margin-top: 1px; }
-    .comment-novel-tag { font-size: 10px; padding: 2px 10px; border-radius: 20px; background: rgba(155,123,140,0.1); color: var(--mauve); letter-spacing: 0.04em; }
-    .comment-text { font-size: 14px; line-height: 1.7; color: var(--ink); opacity: 0.78; word-break: break-word; }
-    .comment-actions { display: flex; align-items: center; gap: 7px; margin-top: 11px; }
-
-    .comment-like-btn {
-      background: none; border: 1px solid rgba(26,20,16,0.08);
-      border-radius: 20px; padding: 4px 12px; font-size: 12px; color: var(--mauve);
-      cursor: pointer; transition: all var(--transition);
-      display: flex; align-items: center; gap: 5px;
-    }
-    .comment-like-btn:hover { background: rgba(212,169,160,0.14); border-color: var(--blush); transform: scale(1.05); }
-    .comment-like-btn:active { transform: scale(0.97); }
-    .comment-like-btn.liked { background: rgba(212,169,160,0.18); color: var(--plum); border-color: var(--blush); }
-
-    .comment-delete-btn {
-      margin-left: auto; background: none; border: 1px solid rgba(176,84,106,0.13);
-      border-radius: 20px; padding: 4px 12px; font-size: 12px; color: rgba(176,84,106,0.45);
-      cursor: pointer; transition: all var(--transition);
-      display: flex; align-items: center; gap: 4px;
-    }
-    .comment-delete-btn:hover { background: rgba(176,84,106,0.07); border-color: rgba(176,84,106,0.35); color: #b0546a; }
-
-    .delete-confirm-box {
-      display: none; margin-top: 10px; padding: 12px 15px;
-      background: rgba(176,84,106,0.05); border: 1px solid rgba(176,84,106,0.18);
-      border-radius: var(--radius-sm); align-items: center;
-      justify-content: space-between; gap: 10px; flex-wrap: wrap;
-    }
-    .delete-confirm-box.visible { display: flex; animation: fadeIn 0.18s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-    .delete-confirm-text { font-size: 12px; color: #b0546a; display: flex; align-items: center; gap: 5px; }
-    .delete-confirm-actions { display: flex; gap: 7px; }
-    .btn-confirm-delete {
-      background: #b0546a; color: white; border: none; border-radius: 20px;
-      padding: 5px 15px; font-family: 'DM Sans', sans-serif; font-size: 12px;
-      cursor: pointer; transition: all var(--transition);
-    }
-    .btn-confirm-delete:hover { background: #8b3050; transform: translateY(-1px); }
-    .btn-cancel-delete {
-      background: none; border: 1px solid rgba(26,20,16,0.1);
-      border-radius: 20px; padding: 5px 15px;
-      font-family: 'DM Sans', sans-serif; font-size: 12px;
-      color: var(--mauve); cursor: pointer; transition: all var(--transition);
-    }
-    .btn-cancel-delete:hover { background: rgba(26,20,16,0.04); }
-    .no-comments {
-      text-align: center; padding: 40px;
-      font-family: 'Cormorant Garamond', serif; font-size: 18px;
-      font-style: italic; color: var(--mauve); opacity: 0.45;
-    }
-
-    /* ── TOAST ── */
-    .toast {
-      position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(16px);
-      background: var(--plum); color: white; padding: 10px 24px; border-radius: 50px;
-      font-size: 13px; letter-spacing: 0.04em; z-index: 200; opacity: 0;
-      transition: all 0.3s cubic-bezier(0.4,0,0.2,1); pointer-events: none;
-      box-shadow: 0 8px 24px rgba(92,61,82,0.4);
-    }
+    /* TOAST */
+    .toast { position: fixed; bottom: 78px; left: 50%; transform: translateX(-50%) translateY(14px); background: var(--plum); color: white; padding: 9px 22px; border-radius: 50px; font-size: 13px; z-index: 300; opacity: 0; transition: all .3s cubic-bezier(.4,0,.2,1); pointer-events: none; box-shadow: 0 8px 24px rgba(92,61,82,.4); }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid rgba(26,20,16,0.07); padding: 24px 40px;
-      text-align: center; font-size: 11px; color: var(--mauve);
-      opacity: 0.45; letter-spacing: 0.07em; line-height: 1.9;
-    }
+    /* SCROLL BTN */
+    #scrollBtn { position: fixed; bottom: 24px; right: 24px; width: 40px; height: 40px; border-radius: 50%; background: var(--plum); color: white; border: none; cursor: pointer; font-size: 15px; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 18px rgba(92,61,82,.32); transition: all var(--tr); z-index: 50; }
+    #scrollBtn:hover { background: var(--mauve); transform: translateY(-2px); }
+    #scrollBtn.vis { display: flex; }
 
-    /* ── SCROLL BTN ── */
-    #scrollBtn {
-      position: fixed; bottom: 26px; right: 26px;
-      width: 40px; height: 40px; border-radius: 50%;
-      background: var(--plum); color: white; border: none;
-      cursor: pointer; font-size: 16px;
-      display: none; align-items: center; justify-content: center;
-      box-shadow: 0 4px 18px rgba(92,61,82,0.32);
-      transition: all var(--transition); z-index: 50;
-    }
-    #scrollBtn:hover { background: var(--mauve); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(92,61,82,0.4); }
-    #scrollBtn:active { transform: translateY(0); }
+    footer { border-top: 1px solid var(--border); padding: 22px 32px; text-align: center; font-size: 10.5px; color: var(--mauve); opacity: .4; letter-spacing: .07em; line-height: 1.9; }
 
-    /* ── HERO FADE-IN ── */
-    .fade-in { opacity: 0; animation: fadeUp 0.65s cubic-bezier(0.4,0,0.2,1) forwards; }
-    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-    .fade-in { transform: translateY(18px); }
-    .fade-in:nth-child(1) { animation-delay: 0.05s; }
-    .fade-in:nth-child(2) { animation-delay: 0.2s; }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
-      .hero { grid-template-columns: 1fr; padding: 28px 20px 22px; gap: 24px; }
+    /* RESPONSIVE */
+    @media(max-width:768px){
+      .hero { grid-template-columns: 1fr; padding: 28px 18px 24px; gap: 24px; }
       .hero-countdown { order: -1; }
-      .site-nav, .announcement { padding-left: 20px; padding-right: 20px; }
-      .search-section { padding: 0 20px 18px; }
-      .main-grid { padding: 8px 20px 40px; }
-      .comment-section-wrap { padding: 0 20px; }
-      .filter-section { border-radius: 16px; overflow-x: auto; flex-wrap: nowrap; padding: 9px 14px; scrollbar-width: none; }
-      .filter-section::-webkit-scrollbar { display: none; }
-      .filter-divider-v { display: none; }
-      .cd-num { font-size: 36px; min-width: 44px; }
-      footer { padding: 20px; }
-      .comment-row { flex-direction: column; }
+      .library-wrap { grid-template-columns: 1fr; padding: 0 18px 40px; }
+      .sidebar { position: static; }
+      .updates-section { padding: 0 18px 32px; }
+      .site-nav, .announcement { padding-left: 18px; padding-right: 18px; }
+      .settings-panel { width: 88vw; }
     }
-    @media (max-width: 480px) {
-      .novel-card { padding: 13px 15px; gap: 13px; }
-      .cover-img, .cover-placeholder { width: 58px; height: 84px; }
-      .novel-title { font-size: 17px; }
-      .hero-title { font-size: 36px; }
-      .countdown-box { padding: 22px 18px; }
-      .comment-box { padding: 18px; }
+    @media(max-width:480px){
+      .novel-item { padding: 12px 14px; gap: 12px; }
+      .cover-ph { width: 52px; height: 76px; }
+      .novel-title-t { font-size: 16px; }
     }
-
-    /* Shake animation for validation */
-    @keyframes shake {
-      0%,100% { transform: translateX(0); }
-      25%      { transform: translateX(-7px); }
-      75%      { transform: translateX(7px); }
-    }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
   </style>
   <meta name="google-site-verification" content="CjtMMlctLjvkx0nCfKICKUhFmq-v7zvq7Fznj-fMKTw" />
 </head>
 <body>
 
-  <!-- Toast -->
-  <div class="toast" id="toast"></div>
+<div id="grain"></div>
+<div class="toast" id="toast"></div>
 
-  <!-- NAV -->
-  <nav class="site-nav" id="siteNav">
-    <div class="nav-brand">A <span>Novel</span> Web</div>
-    <button class="theme-btn" id="themeBtn" onclick="toggleDark()" aria-label="Toggle dark mode">🌙</button>
-  </nav>
+<!-- SETTINGS OVERLAY -->
+<div class="settings-overlay" id="settingsOverlay" onclick="closeSettings()"></div>
 
-  <!-- ANNOUNCEMENT -->
-  <div class="announcement" id="annBar">
-    <div class="announcement-track">
-      <div class="announcement-scroll">
-        ✦ &nbsp;&nbsp;
-        <em>Him and Her Vol. 2</em>
-        &nbsp; will release on 2nd June &nbsp;&nbsp; ✦ &nbsp;&nbsp;
-        Website updates weekly &nbsp;&nbsp; ✦
+<!-- SETTINGS PANEL -->
+<div class="settings-panel" id="settingsPanel">
+  <div class="sp-header">
+    <div class="sp-title">Settings</div>
+    <button class="icon-btn" onclick="closeSettings()">✕</button>
+  </div>
+  <div class="sp-body">
+    <div class="sp-section">
+      <span class="sp-section-label">Appearance</span>
+      <div class="sp-row">
+        <div><div class="sp-row-label">Dark mode</div><div class="sp-row-sub">Easy on the eyes</div></div>
+        <button class="toggle" id="darkToggle" onclick="toggleDark()"></button>
+      </div>
+      <div class="sp-row">
+        <div><div class="sp-row-label">Grain texture</div><div class="sp-row-sub">Paper feel</div></div>
+        <button class="toggle on" id="grainToggle" onclick="toggleGrain()"></button>
+      </div>
+      <div class="sp-row">
+        <div><div class="sp-row-label">Animations</div><div class="sp-row-sub">Motion effects</div></div>
+        <button class="toggle on" id="animToggle" onclick="toggleAnim()"></button>
       </div>
     </div>
-    <span class="ann-close" onclick="closeAnn()" aria-label="Close announcement">✕</span>
+    <div class="sp-section">
+      <span class="sp-section-label">Accent Colour</span>
+      <div class="accent-picker">
+        <div class="ap-dot selected" style="background:#5c3d52" onclick="setAccent(this,'#5c3d52','#9b7b8c')"></div>
+        <div class="ap-dot" style="background:#1565c0" onclick="setAccent(this,'#1565c0','#5c94d6')"></div>
+        <div class="ap-dot" style="background:#3a5c3a" onclick="setAccent(this,'#3a5c3a','#7a9c7a')"></div>
+        <div class="ap-dot" style="background:#7a4a1e" onclick="setAccent(this,'#7a4a1e','#c9844c')"></div>
+        <div class="ap-dot" style="background:#4a3a6c" onclick="setAccent(this,'#4a3a6c','#9a7acc')"></div>
+        <div class="ap-dot" style="background:#6c3a3a" onclick="setAccent(this,'#6c3a3a','#c47a7a')"></div>
+      </div>
+    </div>
+    <div class="sp-section">
+      <span class="sp-section-label">Reading</span>
+      <div class="sp-row">
+        <div><div class="sp-row-label">Default font size</div></div>
+        <div class="font-control">
+          <button class="fc-btn" onclick="changeFontSize(-1)">−</button>
+          <span class="fc-val" id="fontSizeVal">19</span>
+          <button class="fc-btn" onclick="changeFontSize(1)">+</button>
+        </div>
+      </div>
+      <div class="sp-row">
+        <div><div class="sp-row-label">Sort library</div></div>
+        <select class="sp-select" id="sortSelect" onchange="applySort()">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="alpha">A → Z</option>
+        </select>
+      </div>
+    </div>
+    <div class="sp-section">
+      <span class="sp-section-label">About</span>
+      <div class="sp-row"><div><div class="sp-row-label">Version</div></div><div style="font-size:12px;color:var(--mauve)">1.7 Remaster</div></div>
+      <div class="sp-row"><div><div class="sp-row-label">Last updated</div></div><div style="font-size:12px;color:var(--mauve)">May 2026</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="site-nav" id="siteNav">
+  <div class="nav-brand">A <span>Novel</span> Web</div>
+  <div class="nav-actions">
+    <button class="icon-btn" id="themeBtn" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
+    <button class="icon-btn" onclick="openSettings()" title="Settings">⚙️</button>
+  </div>
+</nav>
+
+<!-- ANNOUNCEMENT -->
+<div class="announcement" id="annBar">
+  <div class="ann-track">
+    <div class="ann-scroll">
+      ✦ &nbsp;&nbsp;
+      <em>Him and Her Vol. 2</em>
+      &nbsp; releases 2nd June &nbsp;&nbsp; ✦ &nbsp;&nbsp;
+      Website updates weekly &nbsp;&nbsp; ✦
+    </div>
+  </div>
+  <span class="ann-close" onclick="closeAnn()">✕</span>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="fade-in" style="animation:fadeUp .65s cubic-bezier(.4,0,.2,1) .05s both">
+    <div class="hero-eyebrow">Original Fiction · By AKA</div>
+    <h1 class="hero-title">Stories<br>worth<br><em>feeling.</em></h1>
+    <div class="hero-line"></div>
+    <p class="hero-sub">A collection of romance, drama, and slice-of-life novels crafted with care. Updated weekly.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">9</div><div class="stat-label">Novels</div></div>
+      <div class="stat"><div class="stat-num">37+</div><div class="stat-label">Chapters</div></div>
+      <div class="stat"><div class="stat-num">4</div><div class="stat-label">Ongoing</div></div>
+    </div>
+  </div>
+  <div style="animation:fadeUp .65s cubic-bezier(.4,0,.2,1) .2s both">
+    <div class="countdown-card">
+      <div class="cd-label">Next Release In</div>
+      <div class="cd-row">
+        <div class="cd-unit"><div class="cd-num" id="days">00</div><div class="cd-sublabel">Days</div></div>
+        <div class="cd-colon">:</div>
+        <div class="cd-unit"><div class="cd-num" id="hours">00</div><div class="cd-sublabel">Hrs</div></div>
+        <div class="cd-colon">:</div>
+        <div class="cd-unit"><div class="cd-num" id="minutes">00</div><div class="cd-sublabel">Min</div></div>
+        <div class="cd-colon">:</div>
+        <div class="cd-unit"><div class="cd-num" id="seconds">00</div><div class="cd-sublabel">Sec</div></div>
+      </div>
+      <div class="cd-title">Him and Her Vol. 2 · 2nd June</div>
+    </div>
+  </div>
+</section>
+<style>@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}</style>
+
+<!-- ── UPDATES CAROUSEL ── -->
+<div class="updates-section">
+  <div class="section-header">
+    <h2 class="section-title">Updates</h2>
+    <span class="section-count">What's new</span>
+  </div>
+  <div class="carousel-outer">
+    <button class="carousel-nav-btn" id="carPrev" onclick="carMove(-1)">←</button>
+    <div class="carousel-container" id="carContainer">
+      <div class="carousel-track" id="carTrack"
+        onmousedown="carDragStart(event)"
+        ontouchstart="carTouchStart(event)"
+        ontouchmove="carTouchMove(event)"
+        ontouchend="carTouchEnd(event)">
+      </div>
+      <div class="carousel-dots" id="carDots"></div>
+    </div>
+    <button class="carousel-nav-btn" id="carNext" onclick="carMove(1)">→</button>
+  </div>
+</div>
+
+<!-- ── LIBRARY + SIDEBAR ── -->
+<div class="library-wrap">
+  <div>
+    <div class="section-header">
+      <h2 class="section-title">Library</h2>
+      <span class="section-count" id="libCount">9 works</span>
+    </div>
+    <div class="al-container">
+      <div class="al-grad-top" id="gradTop" style="opacity:0"></div>
+      <div class="al-scroll" id="novelScroll" onscroll="handleListScroll()">
+        <div id="novelList"></div>
+      </div>
+      <div class="al-grad-bot" id="gradBot"></div>
+    </div>
   </div>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-text fade-in">
-      <div class="hero-eyebrow">Original Fiction · By AKA</div>
-      <h1 class="hero-title">Stories<br>worth<br><em>feeling.</em></h1>
-      <div class="hero-line"></div>
-      <p class="hero-sub">A collection of romance, drama, and slice-of-life novels crafted with care. Updated weekly.</p>
-      <div class="hero-stats">
-        <div class="stat"><div class="stat-num">8</div><div class="stat-label">Novels</div></div>
-        <div class="stat"><div class="stat-num">37+</div><div class="stat-label">Chapters</div></div>
-        <div class="stat"><div class="stat-num">4</div><div class="stat-label">Ongoing</div></div>
+  <div class="sidebar">
+    <div class="sidebar-card">
+      <span class="sb-label">Search</span>
+      <div class="search-bar">
+        <span style="opacity:.3;font-size:14px">🔍</span>
+        <input type="text" placeholder="Search novels or genres…" id="searchInput" oninput="renderNovels()" maxlength="60">
+        <button class="search-btn-i" onclick="renderNovels()">Go</button>
       </div>
     </div>
-
-    <div class="hero-countdown fade-in">
-      <div class="soon-card">
-        <div class="soon-cover">Him<br>and<br>Her</div>
-        <div class="soon-info">
-          <div class="soon-eyebrow">Coming Soon</div>
-          <div class="soon-title"> Novel by AKA</div>
-          <span class="soon-badge">⏳ 2nd June</span>
-        </div>
-      </div>
-      <div class="countdown-box">
-        <div class="countdown-label-top">Next Release In</div>
-        <div class="countdown-display" id="countdownDisplay">
-          <div class="cd-unit"><div class="cd-num" id="days">00</div><div class="cd-label">Days</div></div>
-          <div class="cd-colon">:</div>
-          <div class="cd-unit"><div class="cd-num" id="hours">00</div><div class="cd-label">Hrs</div></div>
-          <div class="cd-colon">:</div>
-          <div class="cd-unit"><div class="cd-num" id="minutes">00</div><div class="cd-label">Min</div></div>
-          <div class="cd-colon">:</div>
-          <div class="cd-unit"><div class="cd-num" id="seconds">00</div><div class="cd-label">Sec</div></div>
-        </div>
-        <div class="released-msg" id="releasedMsg">🎉 Available now!</div>
-        <div class="countdown-title">Him and Her</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SEARCH -->
-  <div class="search-section">
-    <div class="search-wrapper" role="search">
-      <span class="search-icon-inner" aria-hidden="true">🔍</span>
-      <input class="search-input" id="searchInput" type="text"
-        placeholder="Search novels or genres…"
-        onkeyup="searchSuggest()"
-        onkeydown="handleSearchKey(event)"
-        onfocus="onSearchFocus()"
-        onblur="hideSuggestions()"
-        autocomplete="off"
-        aria-label="Search novels"
-        maxlength="80">
-      <button class="clear-btn" id="clearBtn" onclick="clearSearch()" aria-label="Clear search">✕</button>
-      <button class="search-btn" onclick="filterNovels()">Search</button>
-      <div class="suggestions-box" id="suggestionsBox" role="listbox"></div>
-    </div>
-    <div class="filter-section" role="toolbar" aria-label="Filter options">
-      <span class="filter-label">Genre</span>
-      <div class="filter-group" id="genreGroup">
+    <div class="sidebar-card">
+      <span class="sb-label">Genre</span>
+      <div class="pills" id="genrePills">
         <button class="pill active" data-genre="all">All</button>
-        <button class="pill romance" data-genre="romance">💗 Romance</button>
-        <button class="pill drama" data-genre="drama">🎭 Drama</button>
-        <button class="pill slice" data-genre="slice of life">🌿 Slice of Life</button>
-        <button class="pill sad" data-genre="sad">🩶 Sad</button>
-        <button class="pill mystery" data-genre="mystery">🔍 Mystery</button>
-        <button class="pill action" data-genre="action">⚔️ Action</button>
+        <button class="pill" data-genre="romance">💗 Romance</button>
+        <button class="pill" data-genre="drama">🎭 Drama</button>
+        <button class="pill" data-genre="slice of life">🌿 Slice</button>
+        <button class="pill" data-genre="sad">🩶 Sad</button>
+        <button class="pill" data-genre="mystery">🔍 Mystery</button>
+        <button class="pill" data-genre="action">⚔️ Action</button>
       </div>
-      <div class="filter-divider-v"></div>
-      <span class="filter-label">Status</span>
-      <div class="filter-group" id="statusGroup">
-        <button class="pill active" data-status="all">All</button>
+      <div class="pills" style="margin-top:10px" id="statusPills">
+        <button class="pill active" data-status="all">All Status</button>
         <button class="pill" data-status="ongoing">🟢 Ongoing</button>
         <button class="pill" data-status="completed">✅ Complete</button>
       </div>
-      <div class="filter-divider-v"></div>
-      <span class="filter-label">Sort</span>
-      <div class="filter-group" id="sortGroup">
-        <button class="pill active" data-sort="newest">🆕 Newest</button>
-        <button class="pill" data-sort="oldest">📅 Oldest</button>
-      </div>
-      <span class="results-count" id="resultsCount"></span>
+    </div>
+    <div class="sidebar-card">
+      <span class="sb-label">Coming Soon</span>
+      <div class="sb-title">Him and Her Vol. 2</div>
+      <div class="sb-sub">Releases 2nd June 2026</div>
     </div>
   </div>
+</div>
 
-  <!-- NOVELS -->
-  <main class="main-grid">
-    <div class="section-header">
-      <h2 class="section-title">Library</h2>
-      <span class="section-count" id="libraryCount">8 works</span>
+<!-- COMMENT SECTION -->
+<div style="max-width:1060px;margin:0 auto 60px;padding:0 32px">
+  <div class="section-header">
+    <h2 class="section-title">Reader Comments</h2>
+    <span class="section-count" id="commentCount">0 comments</span>
+  </div>
+  <div style="background:var(--cream);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;margin-bottom:20px;box-shadow:var(--shadow-md)">
+    <div style="font-family:'DM Serif Display',serif;font-size:15px;color:var(--plum);margin-bottom:14px;display:flex;align-items:center;gap:8px">💬 Leave a Comment</div>
+    <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+      <input class="comment-input-field" id="commentName" type="text" placeholder="Your name…" maxlength="30" style="flex:1;min-width:140px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:13px;background:var(--surface);color:var(--ink);outline:none">
+      <select id="commentNovel" style="flex:1;min-width:160px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:13px;background:var(--surface);color:var(--ink);outline:none;cursor:pointer">
+        <option value="">About which novel?</option>
+        <option>The Rain Pact</option><option>Ten Percent of Forever</option>
+        <option>The Petal That Falls With a Smile Vol. 1</option>
+        <option>The Petal That Falls With a Smile Vol. 2</option>
+        <option>The Day She Stayed</option><option>Him and Her</option>
+        <option>Him and Her Vol. 2</option><option>Case File: You</option>
+        <option>The Other Side of Rain</option><option>General / All novels</option>
+      </select>
     </div>
-    <div class="novel-list" id="novelList">
-
-      <a class="novel-card" href="rpc.html" data-order="1" data-status="completed" data-genres="romance drama slice of life">
-        <img class="cover-img" src="rp.jpg" alt="The Rain Pact cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="cover-placeholder" style="background:linear-gradient(135deg,#9b7b8c,#d4a9a0);display:none;">The Rain Pact</div>
-        <div class="novel-info">
-          <div class="novel-title">The Rain Pact</div>
-          <div class="novel-badges">
-            <span class="genre-tag romance">Romance</span>
-            <span class="genre-tag drama">Drama</span>
-            <span class="genre-tag slice">Slice of Life</span>
-            <span class="status-badge completed">✅ Completed</span>
-            <span class="chapter-badge">📖 6 Chapters</span>
-          </div>
-          <div class="novel-byline">A Novel by AKA</div>
-        </div>
-        <span class="novel-arrow" aria-hidden="true">→</span>
-      </a>
-
-      <a class="novel-card" href="tpof.html" data-order="2" data-status="completed" data-genres="romance drama slice of life">
-        <img class="cover-img" src="tpof.jpg" alt="Ten Percent of Forever cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="cover-placeholder" style="background:linear-gradient(135deg,#c3a7f4,#f4a7c3);display:none;">Ten Percent of Forever</div>
-        <div class="novel-info">
-          <div class="novel-title">Ten Percent of Forever</div>
-          <div class="novel-badges">
-            <span class="genre-tag romance">Romance</span>
-            <span class="genre-tag drama">Drama</span>
-            <span class="genre-tag slice">Slice of Life</span>
-            <span class="status-badge completed">✅ Completed</span>
-            <span class="chapter-badge">📖 7 Chapters</span>
-          </div>
-          <div class="novel-byline">A Novel by AKA</div>
-        </div>
-        <span class="novel-arrow" aria-hidden="true">→</span>
-      </a>
-
-      <a class="novel-card" href="tptfwas.html" data-order="3" data-status="completed" data-genres="drama slice of life">
-        <img class="cover-img" src="tptfwas.jpg" alt="The Petal Vol 1 cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="cover-placeholder" style="background:linear-gradient(135deg,#7a8c75,#c9a84c);display:none;">The Petal Vol 1</div>
-        <div class="novel-info">
-          <div class="novel-title">The Petal That Falls With a Smile <em style="font-size:14px;opacity:0.6;">Vol. 1</em></div>
-          <div class="novel-badges">
-            <span class="genre-tag drama">Drama</span>
-            <span class="genre-tag slice">Slice of Life</span>
-            <span class="status-badge completed">✅ Completed</span>
-            <span class="chapter-badge">📖 4 Chapters</span>
-          </div>
-          <div class="novel-byline">A Novel by AKA</div>
-        </div>
-        <span class="novel-arrow" aria-hidden="true">→</span>
-      </a>
-
-      <a class="novel-card" href="tdss.html" data-order="4" data-status="ongoing" data-genres="romance drama sad">
-        <img class="cover-img" src="tdss.jpg" alt="The Day She Stayed cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="cover-placeholder" style="background:linear-gradient(135deg,#5f7489,#9b7b8c);display:none;">The Day She Stayed</div>
-        <div class="novel-info">
-          <div class="novel-title">The Day She Stayed</div>
-          <div class="novel-badges">
-            <span class="genre-tag romance">Romance</span>
-            <span class="genre-tag drama">Drama</span>
-            <span class="genre-tag sad">Sad</span>
-            <span class="status-badge ongoing">🟢 Ongoing</span>
-            <span class="chapter-badge">📖 7 Chapters</span>
-          </div>
-          <div class="novel-byline">A Novel by AKA</div>
-        </div>
-        <span class="novel-arrow" aria-hidden="true">→</span>
-      </a>
-
-      <a class="novel-card" href="hah.html" data-order="5" data-status="completed" data-genres="romance drama slice of life">
-        <img class="cover-img" src="hah.jpg" alt="Him and Her cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="cover-placeholder" style="background:linear-gradient(135deg,#d4a9a0,#c9a84c);display:none;">Him and Her</div>
-        <div class="novel-info">
-          <div class="novel-title">Him and Her</div>
-          <div class="novel-badges">
-            <span class="genre-tag romance">Romance</span>
-            <span class="genre-tag drama">Drama</span>
-            <span class="genre-tag slice">Slice of Life</span>
-            <span class="status-badge completed">✅ Completed</span>
-            <span class="chapter-badge">📖 5 Chapters</span>
-          </div>
-          <div class="novel-byline">A Novel by AKA</div>
-        </div>
-        <span class="novel-arrow" aria-hidden="true">→</span>
-      </a>
-
-      <a class="novel-card" href="cfy.html" data-order="6" data-status="ongoing" data-genres="mystery drama action">
-        <img class="cover-img" src="cfy.jpg" alt="Case File: You cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="cover-placeholder" style="background:linear-gradient(135deg,#614d7a,#8b3030);display:none;">Case File: You</div>
-        <div class="novel-info">
-          <div class="novel-title">Case File: You</div>
-          <div class="novel-badges">
-            <span class="genre-tag mystery">Mystery</span>
-            <span class="genre-tag drama">Drama</span>
-            <span class="genre-tag action">Action</span>
-            <span class="status-badge ongoing">🟢 Ongoing</span>
-            <span class="chapter-badge">📖 3 Chapters</span>
-          </div>
-          <div class="novel-byline">A Novel by AKA · Biweekly Updates</div>
-        </div>
-        <span class="novel-arrow" aria-hidden="true">→</span>
-      </a>
-
-      <a class="novel-card" href="tosor.html" data-order="7" data-status="ongoing" data-genres="romance drama slice of life">
-        <img class="cover-img" src="tosor.jpg" alt="The Other Side of Rain cover" style="filter:saturate(0.75)" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="cover-placeholder" style="background:linear-gradient(135deg,#5f7489,#9b7b8c);display:none;">The Other Side of Rain</div>
-        <div class="novel-info">
-          <div class="novel-title">The Other Side of Rain</div>
-          <div class="novel-badges">
-            <span class="genre-tag romance">Romance</span>
-            <span class="genre-tag drama">Drama</span>
-            <span class="genre-tag slice">Slice of Life</span>
-            <span class="status-badge ongoing">🟢 Ongoing</span>
-            <span class="chapter-badge">📖 3 Chapters</span>
-          </div>
-          <div class="novel-byline">A Novel by AKA · Weekly Updates</div>
-        </div>
-        <span class="novel-arrow" aria-hidden="true">→</span>
-      </a>
-
-      <a class="novel-card" href="tptfwasv2.html" data-order="8" data-status="ongoing" data-genres="romance drama slice of life">
-        <img class="cover-img" src="tptfwasv2.jpg" alt="The Petal Vol 2 cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="cover-placeholder" style="background:linear-gradient(135deg,#c97fa0,#f9c7d9);display:none;">The Petal Vol 2</div>
-        <div class="novel-info">
-          <div class="novel-title">The Petal That Falls With a Smile <em style="font-size:14px;opacity:0.6;">Vol. 2</em></div>
-          <div class="novel-badges">
-            <span class="genre-tag romance">Romance</span>
-            <span class="genre-tag drama">Drama</span>
-            <span class="genre-tag slice">Slice of Life</span>
-            <span class="status-badge ongoing">🟢 Ongoing</span>
-            <span class="chapter-badge">📖 2 Chapter</span>
-          </div>
-          <div class="novel-byline">A Novel by AKA</div>
-        </div>
-        <span class="novel-arrow" aria-hidden="true">→</span>
-      </a>
-
-       <a class="novel-card"  data-order="9" data-status="completed" data-genres="romance drama slice of life">
-        <img class="cover-img" src="hahv2.jpg" alt="Him and Her cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <div class="cover-placeholder" style="background:linear-gradient(135deg,#d4a9a0,#c9a84c);display:none;">Him and Her</div>
-        <div class="novel-info">
-          <div class="novel-title">Him and Her <em style="font-size:14px;opacity:0.6;">Vol. 2</em></div>
-          <div class="novel-badges">
-            <span class="genre-tag romance">Romance</span>
-            <span class="genre-tag drama">Drama</span>
-            <span class="genre-tag slice">Slice of Life</span>
-            <span class="status-badge soon-card">2nd June</span>
-            <span class="chapter-badge">📖 - Chapters</span>
-          </div>
-          <div class="novel-byline">A Novel by AKA</div>
-        </div>
-        <span class="novel-arrow" aria-hidden="true"></span>
-      </a>
-
-    </div>
-  </main>
-
-  <!-- COMMENT SECTION -->
-  <div class="comment-section-wrap">
-    <div class="section-header">
-      <h2 class="section-title">Reader Comments</h2>
-      <span class="section-count" id="commentCount">0 comments</span>
-    </div>
-
-    <div class="comment-box">
-      <div class="comment-box-title">💬 Leave a Comment</div>
-      <div class="comment-row">
-        <input class="comment-input" id="commentName" type="text" placeholder="Your name…" maxlength="30" autocomplete="given-name">
-        <select class="comment-input" id="commentNovel">
-          <option value="">About which novel?</option>
-          <option>The Rain Pact</option>
-          <option>Ten Percent of Forever</option>
-          <option>The Petal That Falls With a Smile Vol. 1</option>
-          <option>The Petal That Falls With a Smile Vol. 2</option>
-          <option>The Day She Stayed</option>
-          <option>Him and Her</option>
-          <option>Case File: You</option>
-          <option>The Other Side of Rain</option>
-          <option>General / All novels</option>
-        </select>
-      </div>
-      <textarea class="comment-textarea" id="commentText"
-        placeholder="Share your thoughts, reactions, or feelings about the story…"
-        maxlength="500"
-        oninput="updateCharCount()"></textarea>
-      <div class="char-count" id="charCount">0 / 500</div>
-      <div class="comment-footer">
-        <span class="comment-note">✦ Be kind · No spoilers · Max 500 characters</span>
-        <button class="comment-submit" onclick="submitComment()">Post Comment →</button>
-      </div>
-    </div>
-
-    <div class="comments-list" id="commentsList">
-      <div class="no-comments" id="noComments">Be the first to leave a comment…</div>
+    <textarea id="commentText" maxlength="500" oninput="updateCharCount()" placeholder="Share your thoughts…" style="width:100%;min-height:85px;resize:vertical;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r-sm);font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.65;background:var(--surface);color:var(--ink);outline:none;margin-bottom:10px"></textarea>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <span style="font-size:10px;color:var(--mauve);opacity:.5" id="charCount">0 / 500</span>
+      <span style="font-size:11px;color:var(--mauve);opacity:.5">✦ Be kind · No spoilers · Max 500 chars</span>
+      <button onclick="submitComment()" style="background:var(--plum);color:white;border:none;border-radius:50px;padding:10px 24px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all var(--tr);box-shadow:0 4px 12px rgba(92,61,82,.28)">Post Comment →</button>
     </div>
   </div>
+  <div id="commentsList"><div id="noComments" style="text-align:center;padding:40px;font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:var(--mauve);opacity:.45">Be the first to leave a comment…</div></div>
+</div>
 
-  <footer>
-    Last Updated: ---- · Version 1.6<br>
-    Please do not repost, copy, or reupload stories without permission. Sharing links is always appreciated.
-  </footer>
+<footer>Last Updated: May 2026 · Version 1.7 Remaster<br>Please do not repost, copy, or reupload stories without permission. Sharing links is always appreciated.</footer>
+<button id="scrollBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-  <button id="scrollBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+<script>
+'use strict';
 
-  <script>
-    'use strict';
+/* ── UTILS ── */
+function esc(s){var d=document.createElement('div');d.appendChild(document.createTextNode(String(s)));return d.innerHTML}
+var store={
+  get:function(k,fb){try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb}catch(e){return fb}},
+  set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
 
-    /* ── SECURITY: HTML escaper (prevents XSS) ── */
-    function esc(str) {
-      var d = document.createElement('div');
-      d.appendChild(document.createTextNode(String(str)));
-      return d.innerHTML;
-    }
+/* ── DATA ──
+   HOW TO ADD COVER IMAGES:
+   1. Create a folder called "covers" next to your index.html
+   2. Add your cover image files there (JPG, PNG, or WebP recommended)
+   3. Set the "img" field below to the filename, e.g. img:'covers/rain-pact.jpg'
+   4. If a novel has no image yet, leave img:'' and the gradient will show instead
+   Recommended image size: 350×500px (7:10 ratio)
+*/
+var novels=[
+  {title:'The Rain Pact',           img:'covers/rp.jpg',         link:'rpc.html',       genres:'romance drama slice of life', status:'completed', ch:6,  order:1, grad:'135deg,#9b7b8c,#d4a9a0', badges:['romance','drama','slice']},
+  {title:'Ten Percent of Forever',  img:'covers/tpof.jpg',link:'tpof.html',      genres:'romance drama slice of life', status:'completed', ch:7,  order:2, grad:'135deg,#c3a7f4,#f4a7c3', badges:['romance','drama','slice']},
+  {title:'The Petal That Falls With a Smile Vol. 1', img:'covers/tptfwas.jpg', link:'tptfwas.html',  genres:'drama slice of life',         status:'completed', ch:4,  order:3, grad:'135deg,#7a8c75,#c9a84c', badges:['drama','slice']},
+  {title:'The Day She Stayed',      img:'covers/tdss.jpg',    link:'tdss.html',      genres:'romance drama sad',            status:'ongoing',   ch:7,  order:4, grad:'135deg,#5f7489,#9b7b8c', badges:['romance','drama','sad']},
+  {title:'Him and Her',             img:'covers/hah.jpg',       link:'hah.html',       genres:'romance drama slice of life', status:'completed', ch:5,  order:5, grad:'135deg,#d4a9a0,#c9a84c', badges:['romance','drama','slice']},
+  {title:'Case File: You',          img:'covers/cfy.jpg',     link:'cfy.html',       genres:'mystery drama action',        status:'ongoing',   ch:3,  order:6, grad:'135deg,#614d7a,#8b3030', badges:['mystery','drama','action']},
+  {title:'The Other Side of Rain',  img:'covers/tosor.jpg',   link:'tosor.html',     genres:'romance drama slice of life', status:'ongoing',   ch:3,  order:7, grad:'135deg,#5f7489,#9b7b8c', badges:['romance','drama','slice']},
+  {title:'The Petal That Falls With a Smile Vol. 2', img:'covers/tptfwasv2.jpg', link:'tptfwasv2.html', genres:'romance drama slice of life', status:'ongoing',   ch:4,  order:8, grad:'135deg,#c97fa0,#f9c7d9', badges:['romance','drama','slice']},
+  {title:'Him and Her Vol. 2',      img:'covers/hahv2.jpg',  link:'',               genres:'romance drama slice of life', status:'soon',      ch:0,  order:9, grad:'135deg,#d4a9a0,#c9a84c', badges:['romance','drama','slice']}
+];
 
-    /* ── SECURITY: Safe localStorage wrapper ── */
-    var store = {
-      get: function(key, fallback) {
-        try { var v = localStorage.getItem(key); return v !== null ? JSON.parse(v) : fallback; }
-        catch(e) { return fallback; }
-      },
-      set: function(key, val) {
-        try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
-      }
-    };
+var updateCards=[
+  {icon:'✦',title:'Him and Her Vol. 2',desc:'The sequel arrives 2nd June. A new chapter of love, loss, and choosing each other.',date:'Coming June 2026',tag:'coming',tagLabel:'Coming Soon'},
+  {icon:'🌸',title:'The Petal Vol. 2 — Ch. 2 ',desc:'Nao and H\'s letters grow closer. Two chapters, one combined page.',date:'May 2026',tag:'new',tagLabel:'New Chapter'},
+  {icon:'🔍',title:'Case File: You — Ch. 3',desc:'The interrogation of RIE reveals more questions than answers.',date:'May 2026',tag:'new',tagLabel:'New Chapter'},
+  {icon:'🎀',title:'The Day She Stayed — Ch. 7',desc:'Sayo returns to school, and Ren gives her the sky.',date:'May 2026',tag:'new',tagLabel:'New Chapter'},
+  {icon:'⚙️',title:'Site Remaster',desc:'Smoother animations, settings panel, animated library list, and carousel updates.',date:'May 2026',tag:'update',tagLabel:'Site Update'},
+ 
+];
 
-    /* ── SECURITY: Rate limiter for comments ── */
-    var lastCommentTime = 0;
-    var COMMENT_COOLDOWN = 15000; // 15s between posts
+/* ── CAROUSEL ── */
+var carPos=0,carCardW=260,carGap=16,carDragging=false,carDragStartX=0,carDragDelta=0;
 
-    /* ── DATA ── */
-    var novels = [
-      { name: "The Rain Pact",                           link: "rpc.html",       tags: "Romance Drama Slice of Life", status: "completed" },
-      { name: "Ten Percent of Forever",                  link: "tpof.html",      tags: "Romance Drama Slice of Life", status: "completed" },
-      { name: "The Petal That Falls With a Smile Vol 1", link: "tptfwas.html",   tags: "Drama Slice of Life",         status: "completed" },
-      { name: "The Day She Stayed",                      link: "tdss.html",      tags: "Romance Drama Sad",           status: "ongoing"   },
-      { name: "Him and Her",                             link: "hah.html",       tags: "Romance Drama Slice of Life", status: "completed" },
-      { name: "Case File: You",                          link: "cfy.html",       tags: "Mystery Drama Action",        status: "ongoing"   },
-      { name: "The Other Side of Rain",                  link: "tosor.html",     tags: "Romance Drama Slice of Life", status: "ongoing"   },
-      { name: "The Petal That Falls With a Smile Vol 2", link: "tptfwasv2.html", tags: "Romance Drama Slice of Life", status: "ongoing"   }
-    ];
+function buildCarousel(){
+  var track=document.getElementById('carTrack');
+  var dots=document.getElementById('carDots');
+  track.innerHTML=updateCards.map(function(c){
+    var tagClass=c.tag==='new'?'tag-new':c.tag==='update'?'tag-update':'tag-coming';
+    return'<div class="carousel-card" style="width:'+carCardW+'px">'+
+      '<div class="carousel-card-header">'+
+        '<div class="carousel-card-icon">'+c.icon+'</div>'+
+        '<div class="carousel-card-date">'+esc(c.date)+'</div>'+
+      '</div>'+
+      '<div class="carousel-card-content">'+
+        '<div class="carousel-card-title">'+esc(c.title)+'</div>'+
+        '<p class="carousel-card-desc">'+esc(c.desc)+'</p>'+
+        '<span class="carousel-card-tag '+tagClass+'">'+esc(c.tagLabel)+'</span>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  dots.innerHTML=updateCards.map(function(_,i){
+    return'<button class="carousel-dot'+(i===0?' active':'')+'" onclick="carGoTo('+i+')"></button>';
+  }).join('');
+  carUpdateNav();
+}
 
-    var activeGenre  = 'all';
-    var activeStatus = 'all';
-    var activeSort   = 'newest';
-    var searchHistory = store.get('searchHistory', []);
-    var comments = store.get('novelComments', []);
+function carGetMax(){
+  var container=document.getElementById('carContainer');
+  var w=container.clientWidth-32;
+  var visible=Math.floor((w+carGap)/(carCardW+carGap));
+  return Math.max(0,updateCards.length-visible);
+}
 
-    /* ── NAV SCROLL SHADOW ── */
-    window.addEventListener('scroll', function() {
-      document.getElementById('siteNav').classList.toggle('scrolled', window.scrollY > 10);
-      document.getElementById('scrollBtn').style.display = window.scrollY > 200 ? 'flex' : 'none';
-    }, { passive: true });
+function carMove(dir){carGoTo(carPos+dir)}
+function carGoTo(idx){
+  carPos=Math.max(0,Math.min(idx,carGetMax()));
+  var offset=carPos*(carCardW+carGap);
+  document.getElementById('carTrack').style.transform='translateX(-'+offset+'px)';
+  document.querySelectorAll('.carousel-dot').forEach(function(d,i){d.classList.toggle('active',i===carPos)});
+  carUpdateNav();
+}
+function carUpdateNav(){
+  document.getElementById('carPrev').disabled=carPos===0;
+  document.getElementById('carNext').disabled=carPos>=carGetMax();
+}
 
-    /* ── FILTER PILLS ── */
-    document.getElementById('genreGroup').addEventListener('click', function(e) {
-      var btn = e.target.closest('.pill'); if (!btn) return;
-      this.querySelectorAll('.pill').forEach(function(b) { b.classList.remove('active'); });
-      btn.classList.add('active');
-      activeGenre = btn.dataset.genre || 'all';
-      filterNovels();
-    });
+/* DRAG */
+function carDragStart(e){
+  carDragging=true;carDragStartX=e.clientX;carDragDelta=0;
+  document.getElementById('carTrack').classList.add('dragging');
+  document.addEventListener('mousemove',carDragMove);
+  document.addEventListener('mouseup',carDragEnd);
+}
+function carDragMove(e){if(!carDragging)return;carDragDelta=e.clientX-carDragStartX}
+function carDragEnd(){
+  if(!carDragging)return;carDragging=false;
+  document.getElementById('carTrack').classList.remove('dragging');
+  document.removeEventListener('mousemove',carDragMove);
+  document.removeEventListener('mouseup',carDragEnd);
+  if(carDragDelta<-50)carMove(1);
+  else if(carDragDelta>50)carMove(-1);
+  else carGoTo(carPos);
+}
 
-    document.getElementById('statusGroup').addEventListener('click', function(e) {
-      var btn = e.target.closest('.pill'); if (!btn) return;
-      this.querySelectorAll('.pill').forEach(function(b) { b.classList.remove('active'); });
-      btn.classList.add('active');
-      activeStatus = btn.dataset.status || 'all';
-      filterNovels();
-    });
+/* TOUCH */
+var carTouchX=0;
+function carTouchStart(e){carTouchX=e.touches[0].clientX}
+function carTouchMove(e){e.preventDefault()}
+function carTouchEnd(e){
+  var dx=e.changedTouches[0].clientX-carTouchX;
+  if(dx<-40)carMove(1);else if(dx>40)carMove(-1);
+}
 
-    document.getElementById('sortGroup').addEventListener('click', function(e) {
-      var btn = e.target.closest('.pill'); if (!btn) return;
-      this.querySelectorAll('.pill').forEach(function(b) { b.classList.remove('active'); });
-      btn.classList.add('active');
-      activeSort = btn.dataset.sort || 'newest';
-      var list = document.getElementById('novelList');
-      var items = Array.from(list.querySelectorAll('.novel-card'));
-      items.sort(function(a, b) {
-        var ao = parseInt(a.dataset.order) || 0, bo = parseInt(b.dataset.order) || 0;
-        return activeSort === 'newest' ? bo - ao : ao - bo;
-      });
-      items.forEach(function(item) { list.appendChild(item); });
-      filterNovels();
-    });
+window.addEventListener('resize',function(){carGoTo(carPos)});
 
-    /* ── SEARCH ── */
-    function onSearchFocus() {
-      var input = document.getElementById('searchInput').value.trim();
-      if (!input && searchHistory.length) showHistory();
-    }
+/* ── NOVEL LIST ── */
+var activeGenre='all',activeStatus='all',activeSort='newest',selectedOrder=-1;
 
-    function handleSearchKey(e) {
-      if (e.key === 'Enter') { filterNovels(); hideSuggestions(); }
-      if (e.key === 'Escape') { clearSearch(); }
-    }
+var badgeClass={romance:'b-romance',drama:'b-drama',slice:'b-slice','slice of life':'b-slice',sad:'b-sad',mystery:'b-mystery',action:'b-action'};
+var badgeLabel={romance:'Romance',drama:'Drama',slice:'Slice of Life',sad:'Sad',mystery:'Mystery',action:'Action'};
 
-    function searchSuggest() {
-      var input = document.getElementById('searchInput').value.toLowerCase().trim();
-      document.getElementById('clearBtn').style.display = input ? 'block' : 'none';
-      filterNovels();
-      if (!input) { searchHistory.length ? showHistory() : hideSuggestions(); return; }
+/* Build the cover HTML — shows real image if img is set, gradient fallback otherwise */
+function buildCover(n){
+  var bg='linear-gradient('+n.grad+')';
+  if(n.img){
+    /* Real cover image with gradient as fallback background while loading */
+    return '<div class="cover-ph" style="background:'+bg+'">'+
+      '<img src="'+esc(n.img)+'" alt="Cover — '+esc(n.title)+'" '+
+           'loading="lazy" '+
+           'onerror="this.style.display=\'none\'"'+
+      '>'+
+    '</div>';
+  }
+  /* No image — show gradient with title text */
+  return '<div class="cover-ph" style="background:'+bg+';padding:6px">'+
+    '<span style="position:relative;z-index:1;font-size:8px;color:white;font-family:\'Cormorant Garamond\',serif;font-style:italic;text-align:center;line-height:1.3">'+
+      esc(n.title.slice(0,22))+
+    '</span>'+
+  '</div>';
+}
 
-      var matches = novels.filter(function(n) {
-        return n.name.toLowerCase().includes(input) || n.tags.toLowerCase().includes(input);
-      });
-      var box = document.getElementById('suggestionsBox');
-      if (!matches.length) { box.style.display = 'none'; return; }
+function renderNovels(){
+  var list=document.getElementById('novelList');
+  var q=document.getElementById('searchInput').value.toLowerCase().trim();
+  var sorted=novels.slice();
+  if(activeSort==='newest')sorted.sort(function(a,b){return b.order-a.order});
+  else if(activeSort==='oldest')sorted.sort(function(a,b){return a.order-b.order});
+  else sorted.sort(function(a,b){return a.title.localeCompare(b.title)});
+  var filtered=sorted.filter(function(n){
+    return(!q||n.title.toLowerCase().includes(q)||n.genres.includes(q))&&
+           (activeGenre==='all'||n.genres.includes(activeGenre))&&
+           (activeStatus==='all'||n.status===activeStatus);
+  });
+  document.getElementById('libCount').textContent=filtered.length+' works';
+  list.innerHTML=filtered.map(function(n){
+    var isSelected=selectedOrder===n.order;
+    var statusBadge=n.status==='ongoing'?'<span class="badge b-ongoing">🟢 Ongoing</span>':
+      n.status==='completed'?'<span class="badge b-completed">✅ Complete</span>':
+      '<span class="badge b-soon">⏳ 2nd June</span>';
+    var chBadge=n.ch>0?'<span class="badge b-ch">📖 '+n.ch+' Ch</span>':'<span class="badge b-ch">📖 Coming</span>';
+    var genBadges=n.badges.map(function(b){return'<span class="badge '+badgeClass[b]+'">'+badgeLabel[b]+'</span>'}).join('');
+    return'<a class="novel-item'+(isSelected?' selected':'')+'" href="'+esc(n.link||'#')+'" data-order="'+n.order+'" onclick="selectNovel(event,'+n.order+')">'+
+      buildCover(n)+
+      '<div class="novel-info">'+
+        '<div class="novel-title-t">'+esc(n.title)+'</div>'+
+        '<div class="novel-badges">'+genBadges+statusBadge+chBadge+'</div>'+
+        '<div class="novel-byline">A Novel by AKA</div>'+
+      '</div>'+
+      '<span class="novel-arrow">→</span>'+
+    '</a>';
+  }).join('');
+}
 
-      box.innerHTML = '<div class="suggestions-header">📖 Novels</div>' +
-        matches.map(function(n) {
-          var stClass = n.status === 'completed' ? 'completed' : 'ongoing';
-          var stText  = n.status === 'completed' ? '✅ Complete' : '🟢 Ongoing';
-          /* Use data attributes for links — no inline JS injection */
-          return '<div class="suggestion-item" role="option" data-link="' + esc(n.link) + '" data-name="' + esc(n.name) + '">' +
-                 '<span class="s-name">' + esc(n.name) + '</span>' +
-                 '<span class="s-tags">' + esc(n.tags) + '</span>' +
-                 '<span class="s-status ' + stClass + '">' + stText + '</span>' +
-                 '</div>';
-        }).join('');
-      box.style.display = 'block';
-    }
+function selectNovel(e,order){
+  if(!e.currentTarget.href||e.currentTarget.href.endsWith('#')){e.preventDefault()}
+  selectedOrder=order;renderNovels();
+}
+function applySort(){activeSort=document.getElementById('sortSelect').value;renderNovels()}
 
-    /* Delegate clicks for suggestions (avoids onmousedown injection) */
-    document.getElementById('suggestionsBox').addEventListener('mousedown', function(e) {
-      var item = e.target.closest('.suggestion-item');
-      if (item) { e.preventDefault(); goTo(item.dataset.link, item.dataset.name); }
-      var hist = e.target.closest('.history-item');
-      if (hist) { e.preventDefault(); useHistory(hist.dataset.query || ''); }
-      var rem = e.target.closest('.history-remove');
-      if (rem) { e.preventDefault(); removeHistory(parseInt(rem.dataset.idx)); }
-    });
+document.getElementById('genrePills').addEventListener('click',function(e){
+  var btn=e.target.closest('.pill');if(!btn)return;
+  this.querySelectorAll('.pill').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');activeGenre=btn.dataset.genre||'all';renderNovels();
+});
+document.getElementById('statusPills').addEventListener('click',function(e){
+  var btn=e.target.closest('.pill');if(!btn)return;
+  this.querySelectorAll('.pill').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');activeStatus=btn.dataset.status||'all';renderNovels();
+});
 
-    function showHistory() {
-      var box = document.getElementById('suggestionsBox');
-      if (!searchHistory.length) { box.style.display = 'none'; return; }
-      box.innerHTML = '<div class="suggestions-header">Recent Searches</div>' +
-        searchHistory.slice(0, 5).map(function(h, i) {
-          return '<div class="history-item" data-query="' + esc(h) + '">' +
-                 '<span style="flex:1">🕐 ' + esc(h) + '</span>' +
-                 '<span class="history-remove" data-idx="' + i + '">✕</span>' +
-                 '</div>';
-        }).join('');
-      box.style.display = 'block';
-    }
+/* LIST SCROLL GRADIENTS */
+function handleListScroll(){
+  var el=document.getElementById('novelScroll');
+  var top=el.scrollTop,total=el.scrollHeight-el.clientHeight;
+  document.getElementById('gradTop').style.opacity=Math.min(top/60,1);
+  document.getElementById('gradBot').style.opacity=total<=0?0:Math.min((total-top)/60,1);
+}
 
-    function useHistory(t) {
-      document.getElementById('searchInput').value = t;
-      document.getElementById('clearBtn').style.display = 'block';
-      filterNovels(); hideSuggestions();
-    }
+/* KEYBOARD */
+document.addEventListener('keydown',function(e){
+  var items=document.querySelectorAll('.novel-item');if(!items.length)return;
+  var cur=-1;items.forEach(function(el,i){if(parseInt(el.dataset.order)===selectedOrder)cur=i});
+  if(e.key==='ArrowDown'){e.preventDefault();var nx=Math.min(cur+1,items.length-1);items[nx].click();items[nx].scrollIntoView({block:'nearest',behavior:'smooth'})}
+  else if(e.key==='ArrowUp'){e.preventDefault();var pv=Math.max(cur-1,0);items[pv].click();items[pv].scrollIntoView({block:'nearest',behavior:'smooth'})}
+});
 
-    function removeHistory(i) {
-      searchHistory.splice(i, 1);
-      store.set('searchHistory', searchHistory);
-      showHistory();
-    }
+/* ── COUNTDOWN ── */
+var releaseDate=new Date('2026-06-02T00:00:00').getTime(),prevSec=-1;
+function tick(){
+  var diff=releaseDate-Date.now();
+  if(diff<=0){['days','hours','minutes','seconds'].forEach(function(id){document.getElementById(id).textContent='00'});return}
+  var d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
+  document.getElementById('days').textContent=String(d).padStart(2,'0');
+  document.getElementById('hours').textContent=String(h).padStart(2,'0');
+  document.getElementById('minutes').textContent=String(m).padStart(2,'0');
+  var sEl=document.getElementById('seconds');
+  if(s!==prevSec){sEl.textContent=String(s).padStart(2,'0');sEl.classList.remove('tick');void sEl.offsetWidth;sEl.classList.add('tick');prevSec=s}
+}
+setInterval(tick,500);tick();
 
-    function goTo(link, name) {
-      /* Validate link is a relative .html path only */
-      if (!link || !/^[\w\-]+\.html$/.test(link)) return;
-      if (name && !searchHistory.includes(name)) {
-        searchHistory.unshift(name);
-        if (searchHistory.length > 10) searchHistory.pop();
-        store.set('searchHistory', searchHistory);
-      }
-      window.location.href = link;
-    }
+/* ── SETTINGS ── */
+function openSettings(){document.getElementById('settingsOverlay').classList.add('open');document.getElementById('settingsPanel').classList.add('open')}
+function closeSettings(){document.getElementById('settingsOverlay').classList.remove('open');document.getElementById('settingsPanel').classList.remove('open')}
 
-    function hideSuggestions() {
-      setTimeout(function() { document.getElementById('suggestionsBox').style.display = 'none'; }, 180);
-    }
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  var on=document.body.classList.contains('dark');
+  document.getElementById('themeBtn').textContent=on?'☀️':'🌙';
+  document.getElementById('darkToggle').classList.toggle('on',on);
+  store.set('darkMode',on?'on':'off');
+}
+function toggleGrain(){
+  var btn=document.getElementById('grainToggle');btn.classList.toggle('on');
+  document.getElementById('grain').style.opacity=btn.classList.contains('on')?'.45':'0';
+}
+function toggleAnim(){
+  var btn=document.getElementById('animToggle');btn.classList.toggle('on');
+  var on=btn.classList.contains('on');
+  document.querySelectorAll('.novel-item,.carousel-card').forEach(function(el){el.style.transition=on?'':'none'});
+}
+var fontSize=19;
+function changeFontSize(dir){
+  fontSize=Math.max(14,Math.min(26,fontSize+dir*2));
+  document.getElementById('fontSizeVal').textContent=fontSize;
+  store.set('fontSize',fontSize);
+}
+function setAccent(el,plum,mauve){
+  document.querySelectorAll('.ap-dot').forEach(function(d){d.classList.remove('selected')});
+  el.classList.add('selected');
+  document.documentElement.style.setProperty('--plum',plum);
+  document.documentElement.style.setProperty('--mauve',mauve);
+}
 
-    function clearSearch() {
-      document.getElementById('searchInput').value = '';
-      document.getElementById('clearBtn').style.display = 'none';
-      document.getElementById('suggestionsBox').style.display = 'none';
-      filterNovels();
-    }
+/* ── ANNOUNCEMENT ── */
+function closeAnn(){
+  var bar=document.getElementById('annBar');
+  bar.style.opacity='0';bar.style.maxHeight=bar.scrollHeight+'px';
+  requestAnimationFrame(function(){bar.style.transition='all .45s cubic-bezier(.4,0,.2,1)';bar.style.maxHeight='0';bar.style.padding='0';bar.style.borderWidth='0'});
+  setTimeout(function(){bar.remove()},450);
+}
 
-    /* ── FILTER (uses data-genres attribute — more reliable) ── */
-    function filterNovels() {
-      var input = document.getElementById('searchInput').value.toLowerCase().trim();
-      var cards = document.querySelectorAll('#novelList .novel-card');
-      var visible = 0;
+/* ── TOAST ── */
+var toastTimer;
+function showToast(msg){
+  var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show')},2800);
+}
 
-      cards.forEach(function(card) {
-        var title  = (card.querySelector('.novel-title') || {}).textContent || '';
-        var genres = (card.dataset.genres || '').toLowerCase();
-        var status = card.dataset.status || '';
+/* ── COMMENTS ── */
+var lastCommentTime=0,COOLDOWN=15000;
+var comments=store.get('novelComments',[]);
+var avatarColors=['#9b7b8c','#7a8c75','#5c3d52','#b0546a','#5f7489','#614d7a','#8b3030','#c9a84c'];
+function getInitials(n){return n.trim().split(/\s+/).map(function(w){return w[0]}).join('').toUpperCase().slice(0,2)}
+function getAvColor(n){var i=0;for(var c=0;c<n.length;c++)i+=n.charCodeAt(c);return avatarColors[i%avatarColors.length]}
+function timeAgo(ts){var d=Date.now()-ts,s=Math.floor(d/1000);if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric'})}
 
-        var mSearch = !input || title.toLowerCase().includes(input) || genres.includes(input);
-        var mGenre  = activeGenre === 'all' || genres.includes(activeGenre);
-        var mStatus = activeStatus === 'all' || status === activeStatus;
+function updateCharCount(){var l=document.getElementById('commentText').value.length;var el=document.getElementById('charCount');el.textContent=l+' / 500';el.style.color=l>450?'#b0546a':''}
 
-        if (mSearch && mGenre && mStatus) {
-          card.classList.remove('hidden'); visible++;
-        } else {
-          card.classList.add('hidden');
-        }
-      });
+function renderComments(){
+  var list=document.getElementById('commentsList'),none=document.getElementById('noComments');
+  document.getElementById('commentCount').textContent=comments.length+' comment'+(comments.length!==1?'s':'');
+  if(!comments.length){none.style.display='block';list.innerHTML='';list.appendChild(none);return}
+  none.style.display='none';
+  list.innerHTML=comments.slice().reverse().map(function(c,i){
+    var ri=comments.length-1-i;
+    return'<div class="novel-item" id="cc-'+ri+'" style="flex-direction:column;align-items:flex-start;cursor:default;margin-bottom:9px;animation:cardIn .38s ease both">'+
+      '<div style="display:flex;align-items:center;gap:12px;width:100%;margin-bottom:8px">'+
+        '<div style="width:34px;height:34px;border-radius:50%;background:'+getAvColor(c.name)+';display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:white;flex-shrink:0">'+esc(getInitials(c.name))+'</div>'+
+        '<div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--plum)">'+esc(c.name)+'</div><div style="font-size:10px;color:var(--mauve);opacity:.55">'+timeAgo(c.ts)+'</div></div>'+
+        (c.novel?'<span class="badge b-drama">📖 '+esc(c.novel)+'</span>':'')+
+      '</div>'+
+      '<div style="font-size:14px;line-height:1.7;color:var(--ink);opacity:.78;word-break:break-word">'+esc(c.text)+'</div>'+
+      '<div style="display:flex;gap:7px;margin-top:10px">'+
+        '<button onclick="toggleLike('+ri+')" style="background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--mauve);cursor:pointer;transition:all var(--tr)'+(c.liked?';background:rgba(212,169,160,.18);color:var(--plum)':'')+'">'+(c.liked?'♥':'♡')+' '+(c.likes||0)+'</button>'+
+        '<button onclick="askDelete('+ri+')" style="margin-left:auto;background:none;border:1px solid rgba(176,84,106,.15);border-radius:20px;padding:4px 12px;font-size:12px;color:rgba(176,84,106,.5);cursor:pointer;transition:all var(--tr)">🗑 Delete</button>'+
+      '</div>'+
+      '<div id="cfm-'+ri+'" style="display:none;margin-top:10px;padding:12px;background:rgba(176,84,106,.06);border:1px solid rgba(176,84,106,.18);border-radius:10px;width:100%">'+
+        '<span style="font-size:12px;color:#b0546a">⚠️ Delete this comment?</span>'+
+        '<div style="display:flex;gap:7px;margin-top:8px">'+
+          '<button onclick="cancelDelete('+ri+')" style="background:none;border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-family:\'DM Sans\',sans-serif;font-size:12px;color:var(--mauve);cursor:pointer">Cancel</button>'+
+          '<button onclick="confirmDelete('+ri+')" style="background:#b0546a;color:white;border:none;border-radius:20px;padding:5px 14px;font-family:\'DM Sans\',sans-serif;font-size:12px;cursor:pointer">Yes, Delete</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
 
-      var filtered = input || activeGenre !== 'all' || activeStatus !== 'all';
-      document.getElementById('resultsCount').textContent = filtered ? visible + ' found' : '';
-      document.getElementById('libraryCount').textContent = (filtered ? visible : 8) + ' works';
-    }
+var pendingDelete=null;
+function askDelete(idx){if(pendingDelete!==null&&pendingDelete!==idx){var o=document.getElementById('cfm-'+pendingDelete);if(o)o.style.display='none'}pendingDelete=idx;var b=document.getElementById('cfm-'+idx);if(b)b.style.display=b.style.display==='none'?'block':'none'}
+function cancelDelete(idx){var b=document.getElementById('cfm-'+idx);if(b)b.style.display='none';pendingDelete=null}
+function confirmDelete(idx){var card=document.getElementById('cc-'+idx);if(card){card.style.animation='commentOut .32s ease forwards';setTimeout(function(){comments.splice(idx,1);store.set('novelComments',comments);pendingDelete=null;renderComments();showToast('Comment deleted.')},320)}}
+function toggleLike(i){if(!comments[i])return;comments[i].liked=!comments[i].liked;comments[i].likes=(comments[i].likes||0)+(comments[i].liked?1:-1);if(comments[i].likes<0)comments[i].likes=0;store.set('novelComments',comments);renderComments()}
 
-    /* ── COUNTDOWN ── */
-    var releaseDate = new Date('2026-06-02T00:00:00').getTime();
-    var prevSec = -1;
+function submitComment(){
+  var now=Date.now(),name=document.getElementById('commentName').value.trim(),novel=document.getElementById('commentNovel').value,text=document.getElementById('commentText').value.trim();
+  if(!name){shakeEl('commentName');showToast('Please enter your name.');return}
+  if(text.length<3){shakeEl('commentText');showToast('Comment is too short.');return}
+  if(text.length>500){shakeEl('commentText');showToast('Too long.');return}
+  if(now-lastCommentTime<COOLDOWN){showToast('Wait '+ Math.ceil((COOLDOWN-(now-lastCommentTime))/1000)+'s before posting again.');return}
+  if(/^(.)\1{9,}/.test(text.replace(/\s/g,''))){showToast('Please write a real comment.');return}
+  lastCommentTime=now;comments.push({name:name,novel:novel,text:text,ts:now,likes:0,liked:false});store.set('novelComments',comments);
+  document.getElementById('commentText').value='';document.getElementById('commentNovel').value='';document.getElementById('charCount').textContent='0 / 500';
+  renderComments();showToast('Comment posted! ✦');document.getElementById('commentsList').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function shakeEl(id){var el=document.getElementById(id);el.style.borderColor='#b0546a';el.style.animation='none';void el.offsetWidth;el.style.animation='shake .3s ease';setTimeout(function(){el.style.animation='';el.style.borderColor='';el.focus()},320)}
 
-    function updateCountdown() {
-      var diff = releaseDate - Date.now();
-      if (diff <= 0) {
-        document.getElementById('countdownDisplay').style.display = 'none';
-        document.getElementById('releasedMsg').style.display = 'block';
-        document.querySelector('.countdown-label-top').textContent = '🎉 Released!';
-        return;
-      }
-      var d = Math.floor(diff / 86400000);
-      var h = Math.floor(diff % 86400000 / 3600000);
-      var m = Math.floor(diff % 3600000 / 60000);
-      var s = Math.floor(diff % 60000 / 1000);
+/* ── SCROLL BTN + NAV SHADOW ── */
+window.addEventListener('scroll',function(){
+  document.getElementById('scrollBtn').classList.toggle('vis',window.scrollY>200);
+  document.getElementById('siteNav').classList.toggle('scrolled',window.scrollY>10);
+},{passive:true});
 
-      document.getElementById('days').textContent    = String(d).padStart(2,'0');
-      document.getElementById('hours').textContent   = String(h).padStart(2,'0');
-      document.getElementById('minutes').textContent = String(m).padStart(2,'0');
-
-      var secEl = document.getElementById('seconds');
-      if (s !== prevSec) {
-        secEl.textContent = String(s).padStart(2,'0');
-        secEl.classList.remove('tick');
-        void secEl.offsetWidth; /* reflow to restart animation */
-        secEl.classList.add('tick');
-        prevSec = s;
-      }
-    }
-    setInterval(updateCountdown, 500);
-    updateCountdown();
-
-    /* ── DARK MODE ── */
-    function toggleDark() {
-      document.body.classList.toggle('dark');
-      var on = document.body.classList.contains('dark');
-      document.getElementById('themeBtn').textContent = on ? '☀️' : '🌙';
-      store.set('darkMode', on ? 'on' : 'off');
-    }
-
-    /* ── ANNOUNCEMENT ── */
-    function closeAnn() {
-      var bar = document.getElementById('annBar');
-      bar.style.opacity = '0';
-      bar.style.maxHeight = bar.scrollHeight + 'px';
-      requestAnimationFrame(function() {
-        bar.style.transition = 'all 0.45s cubic-bezier(0.4,0,0.2,1)';
-        bar.style.maxHeight = '0';
-        bar.style.padding = '0';
-        bar.style.borderWidth = '0';
-      });
-      setTimeout(function() { bar.remove(); }, 450);
-    }
-
-    /* ── TOAST ── */
-    var toastTimer;
-    function showToast(msg) {
-      var t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(function() { t.classList.remove('show'); }, 2800);
-    }
-
-    /* ── CHAR COUNT ── */
-    function updateCharCount() {
-      var len = document.getElementById('commentText').value.length;
-      var el  = document.getElementById('charCount');
-      el.textContent = len + ' / 500';
-      el.classList.toggle('warn', len > 450);
-    }
-
-    /* ── COMMENTS ── */
-    var avatarColors = ['#9b7b8c','#7a8c75','#5c3d52','#b0546a','#5f7489','#614d7a','#8b3030','#c9a84c'];
-
-    function getInitials(name) {
-      return name.trim().split(/\s+/).map(function(w) { return w[0]; }).join('').toUpperCase().slice(0,2);
-    }
-    function getAvatarColor(name) {
-      var i = 0;
-      for (var c = 0; c < name.length; c++) i += name.charCodeAt(c);
-      return avatarColors[i % avatarColors.length];
-    }
-    function timeAgo(ts) {
-      var diff = Date.now() - ts;
-      var s = Math.floor(diff / 1000);
-      if (s < 60)    return 'just now';
-      if (s < 3600)  return Math.floor(s / 60) + ' min ago';
-      if (s < 86400) return Math.floor(s / 3600) + ' hr ago';
-      if (s < 604800) return Math.floor(s / 86400) + 'd ago';
-      return new Date(ts).toLocaleDateString('en-US', { month:'short', day:'numeric' });
-    }
-
-    /* ── RENDER COMMENTS ── */
-    function renderComments() {
-      var list    = document.getElementById('commentsList');
-      var none    = document.getElementById('noComments');
-      var countEl = document.getElementById('commentCount');
-
-      countEl.textContent = comments.length + ' comment' + (comments.length !== 1 ? 's' : '');
-
-      if (!comments.length) {
-        none.style.display = 'block';
-        list.innerHTML = '';
-        list.appendChild(none);
-        return;
-      }
-      none.style.display = 'none';
-
-      list.innerHTML = comments.slice().reverse().map(function(c, i) {
-        var realIdx = comments.length - 1 - i;
-        return (
-          '<div class="comment-card" id="cc-' + realIdx + '">' +
-            '<div class="comment-header">' +
-              '<div class="comment-avatar" style="background:' + getAvatarColor(c.name) + '">' + esc(getInitials(c.name)) + '</div>' +
-              '<div class="comment-meta">' +
-                '<div class="comment-name">' + esc(c.name) + '</div>' +
-                '<div class="comment-time">' + timeAgo(c.ts) + '</div>' +
-              '</div>' +
-              (c.novel ? '<span class="comment-novel-tag">📖 ' + esc(c.novel) + '</span>' : '') +
-            '</div>' +
-            '<div class="comment-text">' + esc(c.text) + '</div>' +
-            '<div class="comment-actions">' +
-              '<button class="comment-like-btn' + (c.liked ? ' liked' : '') + '" data-idx="' + realIdx + '" onclick="toggleLike(' + realIdx + ')">' +
-                (c.liked ? '♥' : '♡') + ' ' + (c.likes || 0) +
-              '</button>' +
-              '<button class="comment-delete-btn" onclick="askDelete(' + realIdx + ')">🗑 Delete</button>' +
-            '</div>' +
-            '<div class="delete-confirm-box" id="cfm-' + realIdx + '">' +
-              '<span class="delete-confirm-text">⚠️ Delete this comment?</span>' +
-              '<div class="delete-confirm-actions">' +
-                '<button class="btn-cancel-delete" onclick="cancelDelete(' + realIdx + ')">Cancel</button>' +
-                '<button class="btn-confirm-delete" onclick="confirmDelete(' + realIdx + ')">Yes, Delete</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>'
-        );
-      }).join('');
-    }
-
-    /* ── DELETE ── */
-    var pendingDelete = null;
-    function askDelete(idx) {
-      if (pendingDelete !== null && pendingDelete !== idx) {
-        var old = document.getElementById('cfm-' + pendingDelete);
-        if (old) old.classList.remove('visible');
-      }
-      pendingDelete = idx;
-      var box = document.getElementById('cfm-' + idx);
-      if (box) box.classList.toggle('visible');
-    }
-    function cancelDelete(idx) {
-      var box = document.getElementById('cfm-' + idx);
-      if (box) box.classList.remove('visible');
-      pendingDelete = null;
-    }
-    function confirmDelete(idx) {
-      var card = document.getElementById('cc-' + idx);
-      if (card) {
-        card.classList.add('deleting');
-        setTimeout(function() {
-          comments.splice(idx, 1);
-          store.set('novelComments', comments);
-          pendingDelete = null;
-          renderComments();
-          showToast('Comment deleted.');
-        }, 320);
-      }
-    }
-
-    /* ── LIKE ── */
-    function toggleLike(i) {
-      if (!comments[i]) return;
-      if (comments[i].liked) {
-        comments[i].liked = false;
-        comments[i].likes = Math.max(0, (comments[i].likes || 1) - 1);
-      } else {
-        comments[i].liked = true;
-        comments[i].likes = (comments[i].likes || 0) + 1;
-      }
-      store.set('novelComments', comments);
-      renderComments();
-    }
-
-    /* ── SUBMIT ── */
-    function submitComment() {
-      var now  = Date.now();
-      var name = document.getElementById('commentName').value.trim();
-      var novel= document.getElementById('commentNovel').value;
-      var text = document.getElementById('commentText').value.trim();
-
-      /* Validation */
-      if (!name || name.length < 1) { shakeEl('commentName'); showToast('Please enter your name.'); return; }
-      if (!text || text.length < 3) { shakeEl('commentText'); showToast('Comment is too short.'); return; }
-      if (text.length > 500) { shakeEl('commentText'); showToast('Comment is too long.'); return; }
-
-      /* Rate limit */
-      if (now - lastCommentTime < COMMENT_COOLDOWN) {
-        var wait = Math.ceil((COMMENT_COOLDOWN - (now - lastCommentTime)) / 1000);
-        showToast('Please wait ' + wait + 's before posting again.');
-        return;
-      }
-
-      /* Spam heuristic: reject all-caps or all-repeat */
-      if (/^(.)\1{9,}/.test(text.replace(/\s/g,''))) { showToast('Please write a real comment.'); return; }
-
-      lastCommentTime = now;
-      comments.push({ name: name, novel: novel, text: text, ts: now, likes: 0, liked: false });
-      store.set('novelComments', comments);
-
-      document.getElementById('commentText').value  = '';
-      document.getElementById('commentNovel').value = '';
-      document.getElementById('charCount').textContent = '0 / 500';
-
-      renderComments();
-      showToast('Comment posted! ✦');
-      document.getElementById('commentsList').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    /* ── SHAKE ── */
-    function shakeEl(id) {
-      var el = document.getElementById(id);
-      el.style.borderColor = '#b0546a';
-      el.style.animation = 'none';
-      void el.offsetWidth;
-      el.style.animation = 'shake 0.3s ease';
-      setTimeout(function() { el.style.animation = ''; el.style.borderColor = ''; el.focus(); }, 320);
-    }
-
-    /* ── MAX COMMENTS CAP (prevent localStorage bloat) ── */
-    var MAX_COMMENTS = 200;
-
-    /* ── INIT ── */
-    window.addEventListener('load', function() {
-      /* Dark mode */
-      if (store.get('darkMode', '') === 'on') {
-        document.body.classList.add('dark');
-        document.getElementById('themeBtn').textContent = '☀️';
-      }
-
-      /* Trim comments if somehow overgrown */
-      if (comments.length > MAX_COMMENTS) {
-        comments = comments.slice(-MAX_COMMENTS);
-        store.set('novelComments', comments);
-      }
-
-      renderComments();
-    });
-  </script>
+/* ── INIT ── */
+window.addEventListener('load',function(){
+  if(store.get('darkMode','')===('on')){document.body.classList.add('dark');document.getElementById('themeBtn').textContent='☀️';document.getElementById('darkToggle').classList.add('on')}
+  var fs=store.get('fontSize',19);if(fs>=14&&fs<=26){fontSize=fs;document.getElementById('fontSizeVal').textContent=fs}
+  if(comments.length>200){comments=comments.slice(-200);store.set('novelComments',comments)}
+  buildCarousel();
+  renderNovels();
+  handleListScroll();
+  renderComments();
+});
+</script>
+<style>@keyframes commentOut{to{opacity:0;transform:scale(.97) translateY(-8px);max-height:0;padding:0;margin:0;border-width:0}}</style>
 </body>
 </html>
