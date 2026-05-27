@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Case File: You - Chapter 3</title>
+    <title>Case File: You - Chapter 4</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap"
@@ -54,6 +54,19 @@
         transition:
           background-color 0.3s ease,
           color 0.3s ease;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      *:focus {
+        outline: none;
+      }
+      *:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(58, 58, 92, 0.3);
+      }
+      ::selection {
+        background: rgba(58, 58, 92, 0.18);
+        color: var(--ink);
       }
 
       /* ── TOP BAR ── */
@@ -389,7 +402,7 @@
         text-transform: uppercase;
       }
 
-      /* ── SUSPECT BLOCK ── */
+      /* ── CRIME SCENE BLOCK ── */
       .suspect-block {
         margin: 40px auto;
         padding: 32px;
@@ -491,7 +504,7 @@
         line-height: 1.8;
       }
 
-      /* ── TATTOO BLOCK ── */
+      /* ── FIGURE BLOCK ── */
       .tattoo-block {
         margin: 40px auto;
         padding: 28px 32px;
@@ -507,8 +520,8 @@
         width: 56px;
         height: 56px;
         border-radius: 12px;
-        background: rgba(58, 58, 92, 0.06);
-        border: 1px solid rgba(58, 58, 92, 0.14);
+        background: rgba(198, 40, 40, 0.06);
+        border: 1px solid rgba(198, 40, 40, 0.14);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -584,19 +597,12 @@
         cursor: pointer;
         background: none;
       }
-      .nav-prev {
-        background: var(--surface);
-        color: var(--ink);
-      }
-      .nav-prev:hover {
-        border-color: var(--accent);
-        background: var(--accent-light);
-        color: var(--accent);
-      }
+      .nav-prev,
       .nav-home {
         background: var(--surface);
         color: var(--ink);
       }
+      .nav-prev:hover,
       .nav-home:hover {
         border-color: var(--accent);
         background: var(--accent-light);
@@ -668,6 +674,13 @@
         .suspect-details {
           gap: 18px;
         }
+        .chapter-nav {
+          justify-content: center;
+        }
+        .nav-btn {
+          padding: 10px 18px;
+          font-size: 12px;
+        }
       }
     </style>
   </head>
@@ -705,11 +718,11 @@
       <div class="chapter-header">
         <div class="series-badge">
           <span class="chapter-icon">🔍</span>
-          Case File: You · Chapter 3
+          Case File: You · Chapter 4
         </div>
-        <h1 class="chapter-title">The Interrogation</h1>
+        <h1 class="chapter-title">One More</h1>
         <p class="chapter-subtitle">
-          Fear. Confusion. Shock. Or a very good liar.
+          Five murders. One symbol. And a figure that shouldn't exist.
         </p>
         <div class="chapter-meta">
           <span class="meta-item">Mystery</span>
@@ -722,394 +735,329 @@
         </div>
       </div>
 
-      <!-- PROSE 1 — Departure -->
+      <!-- PROSE 1 — The Call -->
       <div class="prose" id="novel-content">
-        <p>
-          <span class="name">Sato</span> grabbed his coat from the back of the
-          chair.
-        </p>
+        <p>It was 7:00 AM.</p>
 
         <p>
-          <span class="dialogue"
-            >"Akane, we're leaving shortly. You ready?"</span
-          >
+          <span class="name">Sato</span> had barely opened his eyes when his
+          phone suddenly rang beside him.
         </p>
+
+        <p><span class="clue">Akane.</span></p>
+
+        <p>Still half asleep, he answered the call.</p>
 
         <p>
-          Akane looked up from her desk.
-          <span class="dialogue">"Yeah, just give me a second."</span>
+          <span class="dialogue">"Sato,"</span> Akane said immediately, her
+          voice unusually tense.
+          <span class="dialogue">"Get to the agency as fast as you can."</span>
         </p>
+
+        <p>The line disconnected.</p>
 
         <p>
-          A few moments later, both detectives stepped out of the agency
-          building and headed toward the address listed in the report.
+          Sato stared at the screen for a second before quickly getting dressed.
         </p>
 
-        <p><span class="clue">RIE's residence.</span></p>
-
-        <p>
-          The evening sky was gray, covered in heavy clouds as the city lights
-          slowly began to flicker awake.
-        </p>
-
-        <p>As Sato drove, he kept thinking about the DNA report.</p>
-
-        <p>
-          <span class="dialogue">"If RIE really is the killer…"</span> he
-          muttered, eyes fixed on the road,
-          <span class="dialogue">"is the DNA sample enough to prove it?"</span>
-        </p>
-
-        <p>Akane sat beside him quietly before answering.</p>
-
-        <p>
-          <span class="dialogue"
-            >"It's strong evidence. But for a murder case? We need more than
-            that."</span
-          >
-        </p>
-
-        <p>
-          Sato sighed softly. <span class="dialogue">"Yeah… figured."</span>
-        </p>
+        <p><span class="thought">Something had happened.</span></p>
       </div>
 
-      <!-- CASE FILE BLOCK -->
+      <!-- CASE FILE BLOCK — Arrival -->
       <div class="casefile-block">
         <div class="casefile-icon">🏢</div>
         <div class="casefile-meta">
-          <span class="casefile-title">Destination: RIE's Residence</span>
-          <span class="casefile-sub"
-            >Modern Apartment · Arrived ~30 min later</span
-          >
+          <span class="casefile-title">Destination: The Agency</span>
+          <span class="casefile-sub">Arrived · ~20 minutes later</span>
         </div>
       </div>
 
-      <!-- PROSE 2 — Arrival -->
+      <!-- PROSE 2 — The Scene -->
       <div class="prose" id="novel-content-2">
-        <p>
-          About thirty minutes later, they arrived outside a modern apartment
-          building.
-        </p>
+        <p>About twenty minutes later, Sato rushed into the agency building.</p>
 
-        <p>After confirming the room number, Sato pressed the doorbell.</p>
+        <p>Akane was already waiting near the entrance, arms folded tightly.</p>
 
-        <p>A few seconds later, the door opened.</p>
+        <p>The expression on her face told him everything.</p>
 
-        <p>A young man stood there, slightly confused but calm.</p>
+        <p>Sato frowned. <span class="dialogue">"What's the issue?"</span></p>
 
-        <p><span class="dialogue">"Hello… and you are?"</span></p>
+        <p>Akane looked directly at him.</p>
 
-        <p>Sato showed his ID.</p>
+        <p><span class="danger">"There's been another murder."</span></p>
+
+        <p>Sato stopped walking.</p>
+
+        <p><span class="dialogue">"…Another one?"</span></p>
+
+        <p>Akane nodded slowly.</p>
 
         <p>
           <span class="dialogue"
-            >"Sato Aizawa. This is Akane Arima. We're with the Detective
-            Agency."</span
+            >"We need to head to the crime scene now."</span
           >
         </p>
 
         <p>
-          Akane gave a small nod.
-          <span class="dialogue"
-            >"We'd like to ask you a few questions, if that's alright."</span
-          >
-        </p>
-
-        <p>
-          The man blinked once before stepping aside.
-          <span class="dialogue">"Me? Sure… please come in."</span>
+          Sato exhaled sharply. <span class="dialogue">"Yeah. Let's go."</span>
         </p>
       </div>
 
-      <!-- SUSPECT BLOCK -->
-      <div class="suspect-block">
-        <span class="suspect-label">Person of Interest</span>
-        <div class="suspect-name">RIE</div>
-        <span class="suspect-status">Under Questioning</span>
-        <div class="suspect-details">
-          <div class="suspect-detail">
-            <span class="sd-label">Occupation</span>
-            <span class="sd-val">Adult Film Industry</span>
-          </div>
-          <div class="suspect-detail">
-            <span class="sd-label">Alibi</span>
-            <span class="sd-val">Client — Ruby Zeni</span>
-          </div>
-          <div class="suspect-detail">
-            <span class="sd-label">Apartment</span>
-            <span class="sd-val">Neat. Too normal.</span>
-          </div>
+      <!-- CASE FILE BLOCK — Crime Scene -->
+      <div class="casefile-block">
+        <div class="casefile-icon">🏪</div>
+        <div class="casefile-meta">
+          <span class="casefile-title"
+            >Crime Scene: Local Store, City Edge</span
+          >
+          <span class="casefile-sub"
+            >Isolated · No CCTV · No nearby buildings</span
+          >
         </div>
       </div>
 
-      <!-- PROSE 3 — The Interrogation -->
+      <!-- PROSE 3 — The Location -->
       <div class="prose" id="novel-content-3">
-        <p>The apartment was surprisingly neat.</p>
+        <p>The crime scene was located near the edge of the city.</p>
+
+        <p>
+          A small local store stood alone beside an empty road, surrounded by
+          silence.
+        </p>
 
         <p>
           <span class="thought"
-            >Minimal furniture. Clean floors. No strange smell.</span
+            >No crowds. No nearby buildings. Just old electric poles and the
+            sound of wind brushing through trees.</span
           >
         </p>
 
-        <p><span class="emphasis">Too normal.</span></p>
-
-        <p>Sato's eyes quietly scanned the room as they sat down.</p>
-
-        <p><span class="dialogue">"You're RIE, correct?"</span></p>
+        <p>Sato stepped out of the car and looked around carefully.</p>
 
         <p>
-          <span class="dialogue">"Yes,"</span> the man replied calmly.
-          <span class="dialogue">"Please, have a seat."</span>
+          <span class="dialogue">"This place is isolated,"</span> he muttered.
+          <span class="dialogue">"Barely any people around."</span>
         </p>
 
-        <p>
-          Sato leaned forward slightly.
-          <span class="dialogue"
-            >"No need for formalities. Let's get straight to the point."</span
-          >
-        </p>
-
-        <p>The atmosphere immediately became heavier.</p>
-
-        <p>
-          Sato opened his notebook.
-          <span class="dialogue"
-            >"Where were you on the night of May 4th?"</span
-          >
-        </p>
-
-        <p>
-          RIE thought for a moment.
-          <span class="dialogue">"I was with a client."</span>
-        </p>
-
-        <p>
-          Sato's expression didn't change. <span class="dialogue">"Name?"</span>
-        </p>
-
-        <p><span class="dialogue">"Hold on."</span></p>
-
-        <p>
-          RIE stood up and walked toward a shelf, pulling out a small file
-          organizer. After flipping through a few pages, he stopped.
-        </p>
-
-        <p><span class="dialogue">"Oh… yeah. Ruby Zeni."</span></p>
-
-        <p>Akane glanced at Sato.</p>
-
-        <p>
-          Sato spoke carefully.
-          <span class="dialogue"
-            >"Ruby Zeni was found dead in her apartment."</span
-          >
-        </p>
-
-        <p>RIE froze.</p>
-
-        <p>
-          <span class="dialogue">"And during the examination,"</span> Sato
-          continued,
-          <span class="dialogue"
-            >"we discovered
-            <span class="danger">traces of your semen</span> inside her
-            body."</span
-          >
-        </p>
-
-        <p>The room went silent.</p>
-
-        <p>RIE's face instantly lost color.</p>
-
-        <p><span class="dialogue">"What…?"</span></p>
-
-        <p>
-          His voice shook.
-          <span class="dialogue">"Wait — I swear I didn't do anything!"</span>
-        </p>
-
-        <p class="scene-break">· · ·</p>
-
-        <p>
-          Sato watched him closely.
-          <span class="dialogue">"Then explain."</span>
-        </p>
-
-        <p>RIE took a deep breath, trying to calm himself.</p>
+        <p>His eyes narrowed toward the shop entrance.</p>
 
         <p>
           <span class="dialogue"
-            >"I work in the adult film industry. Ruby hired me for a private
-            video shoot. That's all. After that, we never contacted each other
-            again."</span
+            >"And <span class="clue">no CCTV cameras</span> either."</span
+          >
+        </p>
+
+        <p>Akane glanced toward the damaged counter inside the store.</p>
+
+        <p>
+          <span class="dialogue"
+            >"At first glance, it could pass as a robbery."</span
           >
         </p>
 
         <p>
-          He looked genuinely shaken.
-          <span class="dialogue">"Is… is she really dead?"</span>
+          Sato nodded slightly. <span class="dialogue">"Yeah… maybe."</span>
         </p>
-
-        <p>
-          Akane answered quietly.
-          <span class="dialogue">"She was murdered in her apartment."</span>
-        </p>
-
-        <p>RIE sat there speechless.</p>
       </div>
 
-      <!-- EVIDENCE BLOCK -->
-      <div class="evidence-block">
-        <span class="evidence-label">🗂 Sato's Read on RIE</span>
-        <div class="evidence-item">
-          <span class="ev-num">01</span
-          ><span class="ev-text">Fear — genuine, uncontrolled</span>
-        </div>
-        <div class="evidence-item">
-          <span class="ev-num">02</span
-          ><span class="ev-text">Confusion — didn't know she was dead</span>
-        </div>
-        <div class="evidence-item">
-          <span class="ev-num">03</span
-          ><span class="ev-text">Shock — face lost color instantly</span>
-        </div>
-        <div class="evidence-item">
-          <span class="ev-num">??</span
-          ><span class="ev-text"
-            >Either he was innocent… or an extremely good liar.</span
-          >
+      <!-- CRIME SCENE BLOCK -->
+      <div class="suspect-block">
+        <span class="suspect-label">Victim · Crime Scene</span>
+        <div class="suspect-name">Victim #5</div>
+        <span class="suspect-status">Homicide</span>
+        <div class="suspect-details">
+          <div class="suspect-detail">
+            <span class="sd-label">Location</span>
+            <span class="sd-val">Near the register</span>
+          </div>
+          <div class="suspect-detail">
+            <span class="sd-label">Scene</span>
+            <span class="sd-val">Staged as robbery</span>
+          </div>
+          <div class="suspect-detail">
+            <span class="sd-label">Month</span>
+            <span class="sd-val">Five in thirty days</span>
+          </div>
         </div>
       </div>
 
-      <!-- PROSE 4 — The Tattoo -->
+      <!-- PROSE 4 — The Symbol -->
       <div class="prose" id="novel-content-4">
         <p>
-          As RIE nervously rubbed his hands together, something suddenly caught
-          Sato's attention.
+          Inside the store, the victim's body lay motionless near the register.
         </p>
 
-        <p>A tattoo.</p>
+        <p>Akane crouched beside it, examining the wounds carefully.</p>
 
-        <p>
-          <span class="clue"
-            >A thin black symbol running across the side of his wrist.</span
-          >
-        </p>
+        <p>Then suddenly —</p>
 
-        <p>Sato's eyes narrowed slightly.</p>
+        <p><span class="dialogue">"Sato."</span></p>
 
-        <p>But he said nothing.</p>
+        <p>Her voice became colder.</p>
 
-        <p><span class="thought">Not yet.</span></p>
+        <p><span class="dialogue">"Look at this."</span></p>
 
-        <p>
-          Instead, he stood up calmly.
-          <span class="dialogue">"That'll be all for now."</span>
-        </p>
+        <p>Sato walked over.</p>
 
-        <p>Akane blinked. <span class="dialogue">"We're leaving?"</span></p>
+        <p>The moment he saw it, his expression darkened instantly.</p>
 
-        <p>Sato ignored the question and looked toward RIE.</p>
-
-        <p>
-          <span class="dialogue"
-            >"Thank you for cooperating with the investigation."</span
-          >
-        </p>
-
-        <p>RIE gave a weak nod. <span class="dialogue">"No… problem."</span></p>
-      </div>
-
-      <!-- TATTOO BLOCK -->
-      <div class="tattoo-block">
-        <div class="tattoo-icon">🖤</div>
-        <div class="tattoo-meta">
-          <span class="tattoo-title"
-            >A thin black symbol — side of the wrist.</span
-          >
-          <span class="tattoo-sub">Noted · Not mentioned · Filed away</span>
-        </div>
-      </div>
-
-      <!-- PROSE 5 — The Walk Back -->
-      <div class="prose" id="novel-content-5">
         <p class="scene-break">· · ·</p>
 
         <p>
-          Later that night, while walking back toward the agency, Akane finally
-          spoke.
+          <span class="danger">Three lines. A triangle. A bleeding eye.</span>
         </p>
+
+        <p><span class="emphasis">Again.</span></p>
+
+        <p>Sato stared at it in silence.</p>
 
         <p>
-          <span class="dialogue">"Sato… why did we leave so suddenly?"</span>
+          <span class="dialogue">"Five murders…"</span> he said quietly.
+          <span class="dialogue">"Five murders in the same month."</span>
         </p>
 
-        <p>
-          Sato kept his hands in his pockets as he walked beneath the dim
-          streetlights.
-        </p>
-
-        <p>
-          <span class="dialogue"
-            >"This case is much bigger than we imagined."</span
-          >
-        </p>
-
-        <p>Akane looked at him quietly.</p>
-
-        <p>
-          Sato continued.
-          <span class="dialogue"
-            >"Ruby died on May 5th. According to the timeline, RIE was the last
-            known person to see her alive."</span
-          >
-        </p>
-
-        <p>
-          He paused for a moment.
-          <span class="dialogue">"But something feels wrong."</span>
-        </p>
+        <p>His jaw tightened.</p>
 
         <p>
           <span class="dialogue"
-            >"You think someone else entered the apartment later that
-            night?"</span
+            >"And every single one marked with
+            <span class="danger">that symbol</span>."</span
           >
-          Akane asked.
         </p>
 
-        <p>Sato looked up at the dark sky.</p>
+        <p>He looked around the empty shop once more.</p>
 
-        <p><span class="dialogue">"…Either that."</span></p>
+        <p>
+          <span class="dialogue"
+            >"So this wasn't just a robbery after all."</span
+          >
+        </p>
+      </div>
 
-        <p>His expression hardened slightly.</p>
+      <!-- EVIDENCE BLOCK — The Symbol -->
+      <div class="evidence-block">
+        <span class="evidence-label">🗂 The Symbol — All Five Scenes</span>
+        <div class="evidence-item">
+          <span class="ev-num">01</span>
+          <span class="ev-text">Three lines forming a triangle</span>
+        </div>
+        <div class="evidence-item">
+          <span class="ev-num">02</span>
+          <span class="ev-text">A bleeding eye at the center</span>
+        </div>
+        <div class="evidence-item">
+          <span class="ev-num">03</span>
+          <span class="ev-text">Present at every murder this month</span>
+        </div>
+        <div class="evidence-item">
+          <span class="ev-num">??</span>
+          <span class="ev-text">A signature — or a message?</span>
+        </div>
+      </div>
 
-        <p><span class="dialogue">"Or RIE is hiding something."</span></p>
+      <!-- PROSE 5 — Orders -->
+      <div class="prose" id="novel-content-5">
+        <p>Akane stood up slowly. <span class="dialogue">"What now?"</span></p>
+
+        <p>Sato turned toward her.</p>
+
+        <p>
+          <span class="dialogue">"Send the body for further examination."</span>
+        </p>
+
+        <p>Then he glanced toward the dark corners of the store.</p>
+
+        <p>
+          <span class="dialogue"
+            >"And search the area. Anything suspicious, anything unusual — I
+            want every detail."</span
+          >
+        </p>
+
+        <p>Akane nodded. <span class="dialogue">"Understood."</span></p>
+
+        <p>
+          As officers began moving around the scene, Sato slowly walked deeper
+          into the store, scanning everything carefully.
+        </p>
+
+        <p>
+          <span class="thought"
+            >Broken shelves. Scattered items. A faint metallic smell in the
+            air.</span
+          >
+        </p>
+
+        <p>Then —</p>
+
+        <p><span class="emphasis">Movement.</span></p>
+      </div>
+
+      <!-- FIGURE BLOCK -->
+      <div class="tattoo-block">
+        <div class="tattoo-icon">👤</div>
+        <div class="tattoo-meta">
+          <span class="tattoo-title"
+            >A black figure — back entrance. Tall. Motionless.</span
+          >
+          <span class="tattoo-sub"
+            >Watching · Then gone · No trace left behind</span
+          >
+        </div>
+      </div>
+
+      <!-- PROSE 6 — The Figure -->
+      <div class="prose" id="novel-content-6">
+        <p>
+          For a split second, Sato saw a black figure standing outside the back
+          entrance.
+        </p>
+
+        <p><span class="thought">Tall. Motionless. Watching him.</span></p>
+
+        <p>Sato's eyes widened slightly.</p>
+
+        <p><span class="dialogue">"What the —"</span></p>
+
+        <p><span class="danger">The figure vanished.</span></p>
+
+        <p>Sato immediately turned toward the exit.</p>
+
+        <p><span class="dialogue">"Hey!"</span></p>
+
+        <p>But by the time he reached outside…</p>
+
+        <p><span class="emphasis">There was nobody there.</span></p>
+
+        <p class="scene-break">· · ·</p>
+
+        <p>Only silence.</p>
+
+        <p>And the cold morning wind.</p>
       </div>
 
       <!-- OBSERVATION BLOCK -->
       <div class="observation-block">
-        <span class="observation-label">🔍 Sato's Theory</span>
+        <span class="observation-label">🔍 Sato's Read</span>
         <p class="observation-text">
-          Ruby died on May 5th.<br />
-          RIE was the last known person to see her alive.<br /><br />
-          But something feels wrong.<br /><br />
-          Either someone else entered the apartment that night…<br />
-          or RIE is hiding something.
+          Five murders. Same month. Same symbol.<br />
+          This wasn't robbery — it was never robbery.<br /><br />
+          Someone was at the back entrance.<br />
+          Tall. Still. Watching specifically him.<br /><br />
+          By the time he reached outside — nothing.<br />
+          No footsteps. No shadow. No trace.<br /><br />
+          Whoever this is… they know we're looking.
         </p>
       </div>
 
       <!-- CHAPTER END -->
       <div class="chapter-end">
-        <span class="end-label">End of Chapter 3</span>
-        <div class="end-line">"Or RIE is hiding something."</div>
-        <div class="end-sub">— Sato Aizawa</div>
+        <span class="end-label">End of Chapter 4</span>
+        <div class="end-line">"Only silence. And the cold morning wind."</div>
+        <div class="end-sub">— Case File: You</div>
         <div class="chapter-nav">
-          <a href="cfy2.html" class="nav-btn nav-prev">← Chapter 2</a>
+          <a href="cfy3.html" class="nav-btn nav-prev">← Chapter 3</a>
           <a href="index.html" class="nav-btn nav-home">🏠 Home</a>
-          <a href="cfy4.html" class="nav-btn nav-next">Next Chapter →</a>
         </div>
       </div>
     </main>
@@ -1127,6 +1075,7 @@
           "novel-content-3",
           "novel-content-4",
           "novel-content-5",
+          "novel-content-6",
         ].forEach(function (id) {
           var el = document.getElementById(id);
           if (el) el.style.fontSize = fontSize + "px";

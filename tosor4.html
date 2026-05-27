@@ -3,9 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      The Other Side of Rain — Chapter 3: The Truth Behind the Smile
-    </title>
+    <title>The Other Side of Rain — Chapter 4: What the Rain Was Hiding</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Lora:ital,wght@0,400;1,400&display=swap"
       rel="stylesheet"
@@ -57,7 +55,6 @@
         inset: 0;
         pointer-events: none;
         z-index: 0;
-        opacity: 0.28;
       }
 
       body.dark {
@@ -103,17 +100,21 @@
       body.dark .reading-progress-bar {
         background: var(--ink-faint);
       }
-      body.dark .crane-card {
+      body.dark .moment-card {
         background: rgba(18, 26, 34, 0.88);
         border-color: rgba(74, 143, 160, 0.2);
       }
-      body.dark .journal-card {
+      body.dark .crane-card {
         background: rgba(18, 26, 34, 0.7);
         border-color: rgba(184, 148, 90, 0.2);
       }
       body.dark .world-note {
         background: rgba(74, 143, 160, 0.07);
         border-color: rgba(74, 143, 160, 0.18);
+      }
+      body.dark .part-end-card {
+        background: rgba(18, 26, 34, 0.6);
+        border-color: rgba(74, 143, 160, 0.15);
       }
 
       .reading-progress-bar {
@@ -257,7 +258,6 @@
         text-align: center;
       }
 
-      /* WORLD NOTE */
       .world-note {
         max-width: var(--reading-width);
         margin: 28px auto 0;
@@ -293,7 +293,6 @@
         opacity: 1;
       }
 
-      /* CHAPTER HEADER */
       .chapter-header {
         max-width: var(--reading-width);
         margin: 16px auto 0;
@@ -349,7 +348,6 @@
         opacity: 0.45;
       }
 
-      /* STORY */
       .story-wrapper {
         max-width: var(--reading-width);
         margin: 0 auto;
@@ -392,11 +390,50 @@
         user-select: none;
       }
 
-      /* CRANE MOMENT CARD */
+      /* KEY MOMENT CARD — the hand-holding scene */
+      .moment-card {
+        margin: 2em 0;
+        background: rgba(230, 236, 242, 0.85);
+        border: 1px solid var(--teal-dim);
+        border-radius: 16px;
+        padding: 28px 32px;
+        position: relative;
+        overflow: hidden;
+      }
+      .moment-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(74, 143, 160, 0.05),
+          rgba(184, 148, 90, 0.04)
+        );
+        pointer-events: none;
+      }
+      .moment-eyebrow {
+        font-family: "DM Sans", sans-serif;
+        font-size: 9px;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--teal);
+        opacity: 0.7;
+        margin-bottom: 12px;
+      }
+      .moment-text {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 18px;
+        font-style: italic;
+        line-height: 1.9;
+        color: var(--storm);
+        position: relative;
+      }
+
+      /* CRANE CARD */
       .crane-card {
         margin: 2em 0;
-        background: rgba(230, 236, 242, 0.8);
-        border: 1px solid var(--teal-dim);
+        background: rgba(230, 236, 242, 0.7);
+        border: 1px solid rgba(184, 148, 90, 0.3);
         border-radius: 16px;
         padding: 26px 32px;
         position: relative;
@@ -408,8 +445,8 @@
         inset: 0;
         background: linear-gradient(
           135deg,
-          rgba(74, 143, 160, 0.04),
-          rgba(184, 148, 90, 0.04)
+          rgba(184, 148, 90, 0.04),
+          rgba(74, 143, 160, 0.03)
         );
         pointer-events: none;
       }
@@ -418,8 +455,8 @@
         font-size: 9px;
         letter-spacing: 0.25em;
         text-transform: uppercase;
-        color: var(--teal);
-        opacity: 0.7;
+        color: var(--gold);
+        opacity: 0.8;
         margin-bottom: 12px;
       }
       .crane-text {
@@ -433,7 +470,7 @@
 
       /* PART DIVIDER */
       .part-divider {
-        margin: 3em 0;
+        margin: 3.5em 0 0;
         text-align: center;
       }
       .part-divider-line {
@@ -449,14 +486,36 @@
       }
       .part-title {
         font-family: "Cormorant Garamond", serif;
-        font-size: 20px;
+        font-size: 22px;
         font-style: italic;
         color: var(--teal);
         letter-spacing: 0.05em;
       }
+      .part-sub {
+        font-family: "DM Sans", sans-serif;
+        font-size: 9px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin-top: 6px;
+        opacity: 0.6;
+      }
 
-      /* PACT CARD — finale */
-      .pact-card {
+      /* PART 2 PROSE — needs its own drop cap */
+      .story-body .part2-start::first-letter {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 4.2em;
+        font-style: italic;
+        color: var(--gold);
+        float: left;
+        line-height: 0.75;
+        margin-right: 8px;
+        margin-top: 6px;
+        font-weight: 300;
+      }
+
+      /* CHAPTER END CARD */
+      .part-end-card {
         margin-top: 2.5em;
         background: rgba(230, 236, 242, 0.65);
         border: 1px solid rgba(74, 143, 160, 0.18);
@@ -465,10 +524,8 @@
         text-align: center;
         position: relative;
         overflow: hidden;
-        animation: fadeUp 0.5s ease both;
-        animation-delay: 0.25s;
       }
-      .pact-card::before {
+      .part-end-card::before {
         content: "";
         position: absolute;
         inset: 0;
@@ -479,28 +536,21 @@
         );
         pointer-events: none;
       }
-      .pact-rain {
+      .pec-rain {
         font-size: 20px;
         letter-spacing: 0.2em;
         margin-bottom: 16px;
-        opacity: 0.5;
+        opacity: 0.45;
       }
-      .pact-quote {
+      .pec-quote {
         font-family: "Cormorant Garamond", serif;
         font-size: 19px;
         font-style: italic;
         color: var(--teal);
-        line-height: 1.6;
-        margin-bottom: 12px;
-      }
-      .pact-sub {
-        font-size: 10px;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: var(--ink-soft);
+        line-height: 1.65;
         margin-bottom: 14px;
       }
-      .pact-note {
+      .pec-note {
         font-family: "Cormorant Garamond", serif;
         font-size: 14px;
         font-style: italic;
@@ -627,6 +677,7 @@
           font-size: 16px;
           padding-top: 32px;
         }
+        .moment-card,
         .crane-card {
           padding: 20px 18px;
         }
@@ -651,7 +702,7 @@
         ><span class="back-arrow">←</span><span>Chapters</span></a
       >
       <div class="nav-center">
-        The Other Side of Rain &nbsp;·&nbsp; Chapter 3
+        The Other Side of Rain &nbsp;·&nbsp; Chapter 4
       </div>
       <div class="nav-right">
         <div style="position: relative">
@@ -707,8 +758,8 @@
       style="margin-left: auto; margin-right: auto; max-width: 660px"
     >
       <div class="novel-name">The Other Side of Rain</div>
-      <div class="chapter-label">Chapter Three</div>
-      <h1 class="chapter-title">The Truth Behind the Smile</h1>
+      <div class="chapter-label">Chapter Four</div>
+      <h1 class="chapter-title">What the Rain Was Hiding</h1>
       <div class="chapter-divider">
         <div class="div-line"></div>
         <span class="div-drop">🌧️</span>
@@ -719,154 +770,163 @@
     <div class="story-wrapper">
       <div class="story-body" id="storyBody">
         <p>
-          The next day, it didn't rain.<br />
-          But Minato waited anyway.<br />
-          He stood near the vending machines, umbrella in hand even though the
-          sky was clear.<br />
-          And when Rika finally showed up — ten minutes late, hoodie up, eyes
-          hidden — she blinked.<br />
-          "You're here?"<br />
-          He simply nodded.<br />
-          She looked at the umbrella in his hand. "There's no rain."<br />
-          "I know."<br />
-          She smiled — the real kind this time. The tired kind.
+          It rained harder the next day.<br />
+          The kind of rain that blurred the windows and made the whole school
+          feel quieter than usual.<br />
+          Students huddled beneath overhangs. PE got cancelled. Teachers rushed
+          through hallways with umbrellas half-opened indoors.<br />
+          Minato slipped away during the last period.<br />
+          He didn't ask for permission. He just left.<br />
+          And waited.
         </p>
 
         <p>
-          They didn't walk the usual route. Instead, she led him the long way
-          home, past narrow alleys and quiet streets lined with rusted fences
-          and old laundry.<br />
-          Eventually, they reached a park. Empty.<br />
-          Rika sat on the swings, letting her feet drag in the dirt.<br />
-          Minato stood nearby, watching her carefully.<br />
-          "This is where I used to go after my parents fought," she said, voice
-          even.<br />
-          "I'd swing until I couldn't hear them anymore."<br />
-          Minato didn't interrupt.
+          Behind the school. By the old stairwell.<br />
+          The place where he first found her crying.<br />
+          Where she dropped her smile and let herself just be.<br />
+          At first, all he heard was rain.<br />
+          Then — footsteps.<br />
+          Slow. Careful.<br />
+          Rika turned the corner, hair damp, breathing soft.<br />
+          She didn't say anything at first. Just stood there, watching him like
+          she was waiting to see if he'd disappear.<br />
+          He didn't.
         </p>
 
         <p>
-          "People always think I'm strong," she continued. "Because I laugh.
-          Because I act like I don't care. But sometimes…"<br />
-          Her voice cracked.<br />
-          "I wish someone would've asked why I forget my umbrella."<br />
-          He stepped closer. "Why do you?"<br />
-          She looked at him.<br />
-          "I don't know," she whispered. "Maybe because if I get soaked, someone
-          might notice."
+          She stepped forward.<br />
+          He opened the umbrella.<br />
+          She didn't take it.<br />
+          Instead, she stepped under it with him — close.<br />
+          Closer than before.<br />
+          Shoulder brushing his.<br />
+          Heart beating fast.
         </p>
 
         <div class="section-break">· · ·</div>
 
         <p>
-          Silence.<br />
-          Minato sat on the swing next to hers, hands gripping the chain.<br />
-          He didn't say "I'm sorry."<br />
-          He didn't say "It'll get better."<br />
-          Instead, he pulled something from his pocket.
+          "I don't think I've ever liked someone quietly before," she said.<br />
+          Minato froze.
         </p>
 
-        <!-- CRANE CARD -->
-        <div class="crane-card">
-          <div class="crane-eyebrow">A small thing, carefully kept</div>
-          <div class="crane-text">
-            A folded piece of paper. A small, slightly wrinkled crane.<br />
-            "I saw a girl keep one in her bag once," Minato said softly. "She
-            looked like she was trying to remember something important."
+        <!-- KEY MOMENT CARD -->
+        <div class="moment-card">
+          <div class="moment-eyebrow">A quiet confession</div>
+          <div class="moment-text">
+            Rika looked up at him, eyes more vulnerable than they had ever been
+            — in the classroom, in the hallways, in the laughs she handed to
+            everyone else.<br />
+            "I don't even know what I'm doing," she whispered. "But I know it
+            hurts less when you're around."
           </div>
         </div>
 
         <p>
-          Rika stared at the crane. Then back at him.<br />
-          "You're weird," she murmured.<br />
-          "I know."<br />
-          "…But thank you."<br />
-          She took the paper crane in both hands, like it was made of glass.<br />
-          Then she looked up at the empty sky.<br />
-          "I think I want it to rain tomorrow," she said.<br />
-          And Minato just replied:<br />
-          "Me too."
+          He swallowed.<br />
+          "I'm not good with feelings."<br />
+          "That's okay," she said. "You're good with umbrellas."<br />
+          He didn't smile. He just held the umbrella steady — rain tapping above
+          them like soft applause.
+        </p>
+
+        <p>
+          And then, without thinking, Rika reached for his hand.<br />
+          Not tightly. Not dramatically.<br />
+          Just… slipped her fingers between his.<br />
+          Like it had always been supposed to be that way.<br />
+          Minato looked down at their hands. Then at her. Then up at the
+          rain.<br />
+          And whispered:<br />
+          "I don't want this to be just rain anymore."
         </p>
 
         <!-- PART DIVIDER -->
         <div class="part-divider">
           <div class="part-divider-line"></div>
-          <div class="part-title">The Rain Returns</div>
+          <div class="part-title">
+            Where the Rain Ends and Something Else Begins
+          </div>
+          <div class="part-sub">Later that afternoon</div>
         </div>
 
-        <p>
-          The rain came back the next morning.<br />
-          Not heavy. Not loud. Just a soft drizzle that brushed gently against
-          the windows.<br />
-          Rika stood by the gates, arms crossed, hoodie up. But no umbrella.<br />
-          Minato arrived seconds later — not running, not surprised. Just
-          there.<br />
-          Like he always would be.<br />
-          Wordlessly, he opened the umbrella.<br />
-          Rika stepped under it like she belonged there.
+        <div class="section-break" style="margin-top: 2.5em">· · ·</div>
+
+        <p class="part2-start">
+          They didn't go home right away.<br />
+          The rain softened. The clouds broke.<br />
+          But Rika and Minato stayed there — behind the school, hands still
+          lightly intertwined, umbrella forgotten between them.<br />
+          Not quite together. Not quite apart.
         </p>
 
         <p>
-          They didn't speak for the first few blocks. The sound of rain on the
-          umbrella was enough.<br />
-          Then she asked, "Did you fold that crane yourself?"<br />
-          "No," he admitted. "I found it."<br />
-          "From the girl with the boy who always waits by the cherry tree?"<br />
-          Minato glanced at her. "You noticed them too," he said.<br />
-          She nodded. "Hard not to. They look like they're made of the same kind
-          of quiet."<br />
-          Minato smiled, just slightly. "You and I… we're made of noise we never
-          say out loud."<br />
-          Rika laughed — the real kind. The one that doesn't need to be loud to
-          feel true.
+          Rika leaned her head against his shoulder.<br />
+          "I used to think," she said quietly, "that if I disappeared, no one
+          would really notice. Not me — the real me. Just the version I let them
+          see."<br />
+          Minato didn't speak. He let her finish. He always did.<br />
+          "But you…" she breathed. "You noticed things I didn't even know were
+          visible."
+        </p>
+
+        <p>
+          The sky above them began to clear.<br />
+          Light peeked through, soft and gold.<br />
+          The last of the rain shimmered on the leaves.<br />
+          Minato turned to her.<br />
+          "I used to think no one could hear the things I didn't say," he
+          replied.<br />
+          "But you listened anyway."<br />
+          There was no kiss. No grand confession.<br />
+          Just fingers still held together, and eyes that finally looked without
+          looking away.
         </p>
 
         <div class="section-break">· · ·</div>
 
         <p>
-          Then she reached into her pocket.<br />
-          Pulled out the paper crane.<br />
-          It was dry. Perfectly kept. She'd flattened it, protected it in a
-          small plastic sleeve.<br />
-          "I'm keeping this," she said. "Like a reminder. That someone saw me."
+          Later, at the front gate, they parted like they always did.<br />
+          But this time, Rika paused.<br />
+          She held out something in her hand — something small and familiar.
         </p>
 
-        <p>
-          They stopped at the corner — the same spot where they always parted
-          ways.<br />
-          Usually, that's where they'd say goodbye.<br />
-          But today… Rika didn't move.<br />
-          "Hey," she said. "If it rains again tomorrow…"<br />
-          Minato tilted his head. "What?"<br />
-          "Wait for me. Not here. Behind the school. The stairwell. The one no
-          one uses."<br />
-          "Why?"<br />
-          Her eyes softened. Because for once, she didn't want to walk with him
-          where the world could see. She wanted to let her heart speak — and it
-          was still learning how.<br />
-          "…Because I want to try something."<br />
-          Minato nodded.<br />
-          "Okay."
-        </p>
-
-        <!-- PACT CARD -->
-        <div class="pact-card">
-          <div class="pact-rain">🌧️ &nbsp; 🌧️ &nbsp; 🌧️</div>
-          <div class="pact-quote">
-            "The pacts that matter most are the ones formed quietly,<br />beneath
-            gray skies, between two people who never thought they deserved one."
-          </div>
-          <div class="pact-sub">The Other Side of Rain · Chapter Three</div>
-          <div class="pact-note">
-            They didn't say the word. But a pact was made.
+        <!-- CRANE CARD -->
+        <div class="crane-card">
+          <div class="crane-eyebrow">Her first crane</div>
+          <div class="crane-text">
+            A folded paper crane.<br />
+            Minato blinked. "Is that—?"<br />
+            "I made it this time," she said. "My first one."<br />
+            He reached out slowly and took it.<br />
+            It was clumsy. Imperfect. Slightly off-centered.<br />
+            But it was hers. And it was real.
           </div>
         </div>
+
+        <p>
+          "Even if it doesn't rain tomorrow," she said, stepping back, "I'll
+          still wait."<br />
+          And with that, she turned and walked away — hoodie up, footsteps
+          light.<br />
+          Minato looked down at the crane in his hand.<br />
+          And for the first time in a long time,<br />
+          he didn't want the rain to stop.
+        </p>
+
+        <!-- END CARD -->
+        <div class="part-end-card">
+          <div class="pec-rain">🌧️ &nbsp; ☁️ &nbsp; 🌥️</div>
+          <div class="pec-quote">
+            "Even if it doesn't rain tomorrow,<br />I'll still wait."
+          </div>
+          <div class="pec-note">— The Other Side of Rain, Chapter Four</div>
+        </div>
       </div>
-      <div class="chapter-end">— End of Chapter Three —</div>
+      <div class="chapter-end">— End of Chapter Four —</div>
       <div class="chapter-nav">
-        <a href="tosor2.html" class="nav-btn nav-prev">← Previous</a>
+        <a href="tosor3.html" class="nav-btn nav-prev">← Previous</a>
         <a href="index.html" class="nav-btn nav-home">🏠 Library</a>
-        <a href="tosor4.html" class="nav-btn nav-next">Next Chapter →</a>
       </div>
     </div>
 
@@ -878,10 +938,13 @@
     </button>
 
     <script>
-      /* diagonal teal rain */
+      /* heavier diagonal rain — strongest in this chapter */
       var canvas = document.getElementById("rainCanvas"),
         ctx = canvas.getContext("2d"),
         drops = [];
+      var rainOpacity = 0,
+        targetOpacity = 0.32;
+      canvas.style.opacity = "0";
       function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -892,38 +955,56 @@
         drops.push({
           x: Math.random() * (canvas.width + 100),
           y: -20,
-          length: Math.random() * 16 + 8,
-          speedY: Math.random() * 3.5 + 2.5,
-          speedX: -(Math.random() * 0.8 + 0.3),
-          opacity: Math.random() * 0.18 + 0.06,
-          width: Math.random() * 0.7 + 0.3,
+          length: Math.random() * 18 + 8,
+          speedY: Math.random() * 4 + 3,
+          speedX: -(Math.random() * 0.9 + 0.35),
+          opacity: Math.random() * 0.22 + 0.07,
+          width: Math.random() * 0.8 + 0.3,
         });
       }
+      for (var i = 0; i < 15; i++) spawnDrop();
       function drawRain() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drops.forEach((d, i) => {
+        drops.forEach(function (d, i) {
           ctx.beginPath();
           ctx.moveTo(d.x, d.y);
           ctx.lineTo(d.x + d.speedX * 3, d.y + d.length);
-          ctx.strokeStyle = `rgba(74,143,160,${d.opacity})`;
+          ctx.strokeStyle = "rgba(74,143,160," + d.opacity + ")";
           ctx.lineWidth = d.width;
           ctx.stroke();
           d.y += d.speedY;
           d.x += d.speedX;
           if (d.y > canvas.height + 30) drops.splice(i, 1);
         });
-        if (Math.random() < 0.32) spawnDrop();
+        if (Math.random() < 0.38) spawnDrop();
         requestAnimationFrame(drawRain);
       }
       drawRain();
-      window.addEventListener("scroll", () => {
-        var s = window.scrollY,
-          h = document.documentElement.scrollHeight - window.innerHeight;
-        document.getElementById("readingProgress").style.width =
-          (h > 0 ? (s / h) * 100 : 0) + "%";
-        document.getElementById("scrollBtn").style.display =
-          s > 200 ? "flex" : "none";
-      });
+      /* fade in rain after brief delay */
+      setTimeout(function () {
+        canvas.style.transition = "opacity 2s ease";
+        canvas.style.opacity = "0.32";
+      }, 600);
+      /* rain fades out as reader approaches end */
+      window.addEventListener(
+        "scroll",
+        function () {
+          var s = window.scrollY,
+            h = document.documentElement.scrollHeight - window.innerHeight;
+          document.getElementById("readingProgress").style.width =
+            (h > 0 ? (s / h) * 100 : 0) + "%";
+          document.getElementById("scrollBtn").style.display =
+            s > 200 ? "flex" : "none";
+          var pct = h > 0 ? s / h : 0;
+          if (pct > 0.75) {
+            var newOp = 0.32 * (1 - (pct - 0.75) / 0.2);
+            canvas.style.opacity = Math.max(0, Math.min(0.32, newOp));
+          } else {
+            canvas.style.opacity = "0.32";
+          }
+        },
+        { passive: true },
+      );
       var fontSize = 18;
       function changeFont(a) {
         if (a === 1 && fontSize < 26) fontSize += 2;
@@ -932,13 +1013,13 @@
         document.getElementById("storyBody").style.fontSize = fontSize + "px";
         document.getElementById("fontDisplay").textContent = fontSize;
         try {
-          localStorage.setItem("tosor3FontSize", fontSize);
+          localStorage.setItem("tosor4FontSize", fontSize);
         } catch (e) {}
       }
       function toggleFontPanel() {
         document.getElementById("fontPanel").classList.toggle("open");
       }
-      document.addEventListener("click", (e) => {
+      document.addEventListener("click", function (e) {
         var b = document.getElementById("fontToggle"),
           p = document.getElementById("fontPanel");
         if (!b.contains(e.target) && !p.contains(e.target))
@@ -954,18 +1035,18 @@
       }
       try {
         var r = JSON.parse(localStorage.getItem("tosorRead") || "[]");
-        if (!r.includes("ch3")) {
-          r.push("ch3");
+        if (!r.includes("ch4")) {
+          r.push("ch4");
           localStorage.setItem("tosorRead", JSON.stringify(r));
         }
       } catch (e) {}
-      window.addEventListener("load", () => {
+      window.addEventListener("load", function () {
         try {
           if (localStorage.getItem("darkMode") === "on") {
             document.body.classList.add("dark");
             document.getElementById("themeBtn").textContent = "☀️";
           }
-          var s = parseInt(localStorage.getItem("tosor3FontSize"));
+          var s = parseInt(localStorage.getItem("tosor4FontSize"));
           if (s && s >= 14 && s <= 26) {
             fontSize = s;
             document.getElementById("storyBody").style.fontSize = s + "px";

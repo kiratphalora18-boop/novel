@@ -1,0 +1,1207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Petal Vol. 2 — Ch. 3</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ─── TOKENS ─────────────────────────────── */
+      :root {
+        --bg: #faf5f0;
+        --bg2: #f3ece4;
+        --ink: #251318;
+        --ink-mid: rgba(37, 19, 24, 0.55);
+        --ink-dim: rgba(37, 19, 24, 0.18);
+        --petal: #c8607a;
+        --petal-soft: rgba(200, 96, 122, 0.14);
+        --petal-glow: rgba(200, 96, 122, 0.08);
+        --mauve: #8e5c72;
+        --gold: #b8885a;
+        --paper: #f7f1e9;
+        --paper2: #ede5d8;
+        --tr: 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      body.dark {
+        --bg: #100a0d;
+        --bg2: #18100f;
+        --ink: #f0e4e8;
+        --ink-mid: rgba(240, 228, 232, 0.5);
+        --ink-dim: rgba(240, 228, 232, 0.12);
+        --petal: #d4789a;
+        --petal-soft: rgba(212, 120, 154, 0.15);
+        --petal-glow: rgba(212, 120, 154, 0.06);
+        --paper: #1e1218;
+        --paper2: #261820;
+      }
+
+      /* ─── RESET ──────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+        font-size: 18px;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 400;
+        line-height: 1.9;
+        overflow-x: hidden;
+        transition:
+          background 0.4s,
+          color 0.4s;
+        cursor: none;
+      }
+      @media (pointer: coarse) {
+        body {
+          cursor: auto;
+        }
+      }
+
+      /* ─── CUSTOM CURSOR ──────────────────────── */
+      #cursor {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--petal);
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.2s,
+          height 0.2s,
+          opacity 0.2s;
+        mix-blend-mode: multiply;
+      }
+      body.dark #cursor {
+        mix-blend-mode: screen;
+      }
+      #cursor-ring {
+        position: fixed;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid var(--petal);
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        opacity: 0.4;
+        transition:
+          width 0.35s,
+          height 0.35s,
+          transform 0.08s,
+          opacity 0.3s;
+      }
+      body.hovering #cursor {
+        width: 16px;
+        height: 16px;
+      }
+      body.hovering #cursor-ring {
+        width: 52px;
+        height: 52px;
+        opacity: 0.2;
+      }
+
+      /* ─── GRAIN ──────────────────────────────── */
+      #grain {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9990;
+        opacity: 0.5;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      }
+
+      /* ─── CANVASES ───────────────────────────── */
+      #petalCanvas,
+      #rainCanvas {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+      #petalCanvas {
+        opacity: 0.45;
+      }
+      #rainCanvas {
+        opacity: 0;
+        transition: opacity 2.5s ease;
+      }
+      #rainCanvas.visible {
+        opacity: 0.22;
+      }
+
+      /* ─── READING PROGRESS ───────────────────── */
+      #prog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        width: 0%;
+        z-index: 500;
+        background: linear-gradient(90deg, var(--petal), var(--gold));
+        transition: width 0.1s linear;
+      }
+
+      /* ─── NAV ────────────────────────────────── */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 400;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 48px;
+        background: rgba(250, 245, 240, 0.88);
+        backdrop-filter: blur(22px) saturate(1.6);
+        border-bottom: 1px solid var(--ink-dim);
+        transition: background 0.4s;
+      }
+      body.dark nav {
+        background: rgba(16, 10, 13, 0.9);
+      }
+      .nav-back {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        color: var(--petal);
+        font-family: "DM Sans", sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        transition:
+          gap var(--tr),
+          color var(--tr);
+      }
+      .nav-back:hover {
+        gap: 13px;
+        color: var(--mauve);
+      }
+      .nav-title {
+        font-family: "DM Sans", sans-serif;
+        font-size: 10px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--ink-mid);
+      }
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .nav-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 1px solid var(--ink-dim);
+        background: transparent;
+        color: var(--ink);
+        cursor: none;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all var(--tr);
+      }
+      .nav-btn:hover {
+        border-color: var(--petal);
+        background: var(--petal-soft);
+      }
+      @media (pointer: coarse) {
+        .nav-btn {
+          cursor: pointer;
+        }
+      }
+
+      /* ─── HERO / TITLE PAGE ──────────────────── */
+      .title-page {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 80px 32px 48px;
+        position: relative;
+        z-index: 2;
+        text-align: center;
+      }
+      .eyebrow {
+        font-family: "DM Sans", sans-serif;
+        font-size: 10px;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        color: var(--petal);
+        margin-bottom: 22px;
+        opacity: 0;
+        animation: riseIn 0.7s 0.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      .title-main {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(44px, 8vw, 88px);
+        font-weight: 400;
+        line-height: 1;
+        color: var(--ink);
+        margin-bottom: 6px;
+        opacity: 0;
+        animation: riseIn 0.8s 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      .title-main em {
+        font-style: italic;
+        color: var(--petal);
+      }
+      .title-vol {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: clamp(18px, 2.5vw, 26px);
+        color: var(--mauve);
+        margin-bottom: 40px;
+        opacity: 0;
+        animation: riseIn 0.8s 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      .title-divider {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 36px;
+        opacity: 0;
+        animation: riseIn 0.6s 0.42s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      .td-line {
+        width: 44px;
+        height: 1px;
+        background: rgba(200, 96, 122, 0.3);
+      }
+      .td-petal {
+        font-size: 15px;
+        opacity: 0.5;
+      }
+      .chapter-nav-pills {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+        opacity: 0;
+        animation: riseIn 0.7s 0.52s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      .ch-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 22px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-family: "DM Sans", sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        border: 1px solid var(--ink-dim);
+        color: var(--ink-mid);
+        transition: all var(--tr);
+        cursor: none;
+      }
+      .ch-pill:hover,
+      .ch-pill.active {
+        background: var(--petal);
+        color: white;
+        border-color: var(--petal);
+      }
+      @media (pointer: coarse) {
+        .ch-pill {
+          cursor: pointer;
+        }
+      }
+      .scroll-hint {
+        position: absolute;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--ink-mid);
+        opacity: 0;
+        animation: riseIn 0.6s 0.8s ease forwards;
+      }
+      .scroll-hint-line {
+        width: 1px;
+        height: 40px;
+        background: linear-gradient(180deg, var(--petal), transparent);
+        animation: scrollPulse 1.8s ease-in-out infinite;
+      }
+      @keyframes scrollPulse {
+        0%,
+        100% {
+          opacity: 0.4;
+          transform: scaleY(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scaleY(1.2);
+        }
+      }
+
+      /* ─── CHAPTER BREAK ──────────────────────── */
+      .chapter-break {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 32px;
+        position: relative;
+        z-index: 2;
+      }
+      .ch-break-inner {
+        padding: 60px 0 20px;
+        text-align: center;
+        border-top: 1px solid var(--ink-dim);
+      }
+      .ch-num-label {
+        font-family: "DM Sans", sans-serif;
+        font-size: 9px;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--petal);
+        margin-bottom: 10px;
+        display: block;
+      }
+      .ch-break-title {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(28px, 5vw, 48px);
+        font-style: italic;
+        color: var(--ink);
+        line-height: 1.15;
+      }
+      .ch-break-sub {
+        font-size: 13px;
+        color: var(--ink-mid);
+        margin-top: 10px;
+        font-family: "DM Sans", sans-serif;
+        letter-spacing: 0.04em;
+      }
+
+      /* ─── PROSE ──────────────────────────────── */
+      .prose {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 0 32px;
+        position: relative;
+        z-index: 2;
+      }
+      .prose-inner {
+        padding: 44px 0;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.05rem;
+        line-height: 1.95;
+        color: var(--ink);
+      }
+      .prose-inner p {
+        margin-bottom: 1.5em;
+        text-align: left;
+      }
+      /* drop cap */
+      .prose-inner.has-dropcap p:first-of-type::first-letter {
+        font-family: "Playfair Display", serif;
+        font-size: 4.4em;
+        font-style: italic;
+        color: var(--petal);
+        float: left;
+        line-height: 0.72;
+        margin-right: 10px;
+        margin-top: 8px;
+        font-weight: 400;
+      }
+
+      /* ─── LETTER ─────────────────────────────── */
+      .letter-wrap {
+        max-width: 600px;
+        margin: 2.4em auto;
+        padding: 0 32px;
+        position: relative;
+        z-index: 2;
+      }
+      .letter {
+        background: var(--paper);
+        border: 1px solid rgba(200, 96, 122, 0.2);
+        border-radius: 3px;
+        padding: 40px 44px;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+          0 12px 48px rgba(37, 19, 24, 0.07),
+          4px 4px 0 rgba(200, 96, 122, 0.06);
+      }
+      .letter::before {
+        /* ruled lines */
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          transparent,
+          transparent 29px,
+          rgba(200, 96, 122, 0.05) 29px,
+          rgba(200, 96, 122, 0.05) 30px
+        );
+        pointer-events: none;
+      }
+      .letter::after {
+        /* left margin line */
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 44px;
+        width: 1px;
+        background: rgba(200, 96, 122, 0.08);
+        pointer-events: none;
+      }
+      body.dark .letter {
+        background: var(--paper);
+        border-color: rgba(212, 120, 154, 0.15);
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+      }
+      .letter-from {
+        font-family: "DM Sans", sans-serif;
+        font-size: 9px;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--petal);
+        opacity: 0.7;
+        margin-bottom: 8px;
+      }
+      .letter-to {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.1em;
+        font-style: italic;
+        color: var(--mauve);
+        margin-bottom: 18px;
+      }
+      .letter-body {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 1.05rem;
+        line-height: 1.9;
+        color: var(--ink);
+      }
+      .letter-body p {
+        margin-bottom: 1em;
+      }
+      .letter-body p:last-child {
+        margin-bottom: 0;
+      }
+      .letter-body em {
+        font-style: normal;
+        font-weight: 500;
+      }
+      .letter-sig {
+        margin-top: 22px;
+        font-family: "Playfair Display", serif;
+        font-size: 1.1rem;
+        font-style: italic;
+        color: var(--petal);
+      }
+      .letter.nao {
+        background: var(--paper2);
+        border-color: rgba(142, 92, 114, 0.2);
+      }
+      body.dark .letter.nao {
+        background: var(--paper2);
+      }
+      .letter.nao .letter-sig {
+        color: var(--mauve);
+      }
+      .letter.nao .letter-from {
+        color: var(--mauve);
+      }
+      .letter.nao .letter-to {
+        color: var(--petal);
+      }
+
+      /* ─── SECTION BREAK ──────────────────────── */
+      .section-break {
+        text-align: center;
+        color: var(--petal);
+        opacity: 0.3;
+        font-size: 13px;
+        letter-spacing: 0.35em;
+        margin: 2.4em auto;
+        max-width: 640px;
+        padding: 0 32px;
+        position: relative;
+        z-index: 2;
+        user-select: none;
+      }
+
+      /* ─── PULL QUOTE / EMPHASIS ──────────────── */
+      .pull-quote {
+        max-width: 600px;
+        margin: 3em auto;
+        padding: 0 32px;
+        position: relative;
+        z-index: 2;
+      }
+      .pull-quote-inner {
+        border-left: 2px solid var(--petal);
+        padding-left: 28px;
+        font-family: "Playfair Display", serif;
+        font-size: 1.25rem;
+        font-style: italic;
+        color: var(--mauve);
+        line-height: 1.65;
+      }
+
+      /* ─── CLOSING ────────────────────────────── */
+      .closing {
+        max-width: 640px;
+        margin: 4em auto 80px;
+        padding: 0 32px;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+      }
+      .closing-line {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: 1.2rem;
+        color: var(--ink-mid);
+        line-height: 1.8;
+      }
+
+      /* ─── BOTTOM NAV ─────────────────────────── */
+      .bottom-nav {
+        max-width: 640px;
+        margin: 0 auto 80px;
+        padding: 0 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        border-top: 1px solid var(--ink-dim);
+        padding-top: 28px;
+        position: relative;
+        z-index: 2;
+      }
+      .bn-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 11px 24px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-family: "DM Sans", sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        border: 1px solid var(--ink-dim);
+        color: var(--ink-mid);
+        transition: all var(--tr);
+        cursor: none;
+      }
+      .bn-btn:hover {
+        color: white;
+        background: var(--petal);
+        border-color: var(--petal);
+      }
+      .bn-btn.primary {
+        background: var(--petal);
+        color: white;
+        border-color: var(--petal);
+      }
+      .bn-btn.primary:hover {
+        background: var(--mauve);
+        border-color: var(--mauve);
+      }
+      @media (pointer: coarse) {
+        .bn-btn {
+          cursor: pointer;
+        }
+      }
+
+      /* ─── SCROLL BTN ─────────────────────────── */
+      #scrollBtn {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: var(--petal);
+        color: white;
+        border: none;
+        font-size: 16px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 20px rgba(200, 96, 122, 0.35);
+        transition: all var(--tr);
+        z-index: 300;
+        cursor: none;
+      }
+      #scrollBtn.vis {
+        display: flex;
+      }
+      #scrollBtn:hover {
+        background: var(--mauve);
+        transform: translateY(-2px);
+      }
+      @media (pointer: coarse) {
+        #scrollBtn {
+          cursor: pointer;
+        }
+      }
+
+      /* ─── ANIMATIONS ─────────────────────────── */
+      @keyframes riseIn {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .reveal {
+        opacity: 0;
+        transform: translateY(22px);
+        transition:
+          opacity 0.75s cubic-bezier(0.4, 0, 0.2, 1),
+          transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .reveal.in {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ─── RESPONSIVE ─────────────────────────── */
+      @media (max-width: 600px) {
+        nav {
+          padding: 0 18px;
+        }
+        .nav-title {
+          display: none;
+        }
+        .title-page {
+          padding: 80px 18px 60px;
+        }
+        .prose,
+        .letter-wrap,
+        .pull-quote,
+        .closing,
+        .bottom-nav,
+        .section-break {
+          padding-left: 18px;
+          padding-right: 18px;
+        }
+        .letter {
+          padding: 28px 22px;
+        }
+        .letter::after {
+          left: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cursor"></div>
+    <div id="cursor-ring"></div>
+    <div id="grain"></div>
+    <div id="prog"></div>
+    <canvas id="rainCanvas"></canvas>
+    <canvas id="petalCanvas"></canvas>
+
+    <!-- NAV -->
+    <nav>
+      <a href="tptfwasv2.html" class="nav-back">← Chapters</a>
+      <div class="nav-title">The Petal Vol. 2 · Ch. 3</div>
+      <div class="nav-right">
+        <button class="nav-btn" id="themeBtn" onclick="toggleDark()">🌙</button>
+      </div>
+    </nav>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!--               TITLE PAGE                  -->
+    <!-- ══════════════════════════════════════════ -->
+    <div class="title-page">
+      <div class="eyebrow">The Petal That Falls With a Smile · Volume Two</div>
+      <h1 class="title-main">Chapters<br /><em>Three &amp; </em></h1>
+      <div class="title-vol">
+        A Name Beneath the Ink &amp; A Place the Wind Can't Reach
+      </div>
+      <div class="title-divider">
+        <div class="td-line"></div>
+        <span class="td-petal">🌸</span>
+        <div class="td-line"></div>
+      </div>
+      <div class="chapter-nav-pills">
+        <a href="#ch3" class="ch-pill">Chapter 3 ↓</a>
+      </div>
+      <div class="scroll-hint">
+        <div class="scroll-hint-line"></div>
+        <span>Scroll</span>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!--          CHAPTER 5                        -->
+    <!-- ══════════════════════════════════════════ -->
+    <div id="ch5" class="chapter-break reveal">
+      <div class="ch-break-inner">
+        <span class="ch-num-label">Chapter </span>
+        <h2 class="ch-break-title">A Name Beneath the Ink</h2>
+        <div class="ch-break-sub">Thursday</div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="prose-inner has-dropcap">
+        <p>
+          Thursday came with unexpected warmth.<br />
+          The sakura tree had begun to shift — just a little. Enough to soften
+          the landscape. Enough to make Nao notice the pink bleeding slowly back
+          into the world.
+        </p>
+        <p>
+          She was early that day.<br />
+          Maybe too early. She hadn't even gone to class yet. Her bag still
+          slung on one shoulder, coffee in hand, she knelt down at the bench
+          like it was instinct now.
+        </p>
+        <p>
+          There it was: the book, and another note.<br />
+          But this one looked different.<br />
+          Neater. Folded with more care than before. And on the front, a single
+          word:
+        </p>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal">
+      <div class="pull-quote-inner">"Nao."</div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="prose-inner">
+        <p>
+          Her full name. Not just the initial.<br />
+          Her breath caught.<br />
+          She opened it slowly.
+        </p>
+      </div>
+    </div>
+
+    <div class="section-break reveal">🌸 &nbsp; · &nbsp; 🌸</div>
+
+    <!-- HARUKI'S LETTER — Ch5 -->
+    <div class="letter-wrap reveal">
+      <div class="letter">
+        <div class="letter-from">Letter from Haruki</div>
+        <div class="letter-to">Nao,</div>
+        <div class="letter-body">
+          <p>
+            I didn't think I'd write your name like this.<br />
+            But it felt wrong not to.
+          </p>
+          <p>
+            Yesterday, I saw you.<br />
+            Not clearly. Just… a glimpse.<br />
+            But something about the way you looked up at the tree — like you
+            were listening for something — made me wonder if I'd met you before.
+          </p>
+          <p>
+            I probably haven't.<br />
+            But it feels like I have.
+          </p>
+          <p>
+            If you're still okay with it — yes.<br />
+            I'd like to know you.
+          </p>
+        </div>
+        <div class="letter-sig">— Haruki</div>
+      </div>
+    </div>
+
+    <div class="section-break reveal">· · ·</div>
+
+    <div class="prose reveal">
+      <div class="prose-inner">
+        <p>
+          Haruki.<br />
+          She said it aloud under her breath.<br />
+          There was something about the name that made sense.<br />
+          She didn't know him.
+        </p>
+        <p>
+          And yet…<br />
+          The way he wrote — the quiet rhythm of it — felt like sitting beside
+          someone on a rainy afternoon. Not speaking, but not needing to.<br />
+          She stared at the letter for a while, her heart skipping in uneven
+          beats.<br />
+          Then, slowly, she smiled.
+        </p>
+        <p>
+          She pulled out her notebook. No tearing this time — she wrote
+          carefully, slowly, as if each word mattered.
+        </p>
+      </div>
+    </div>
+
+    <!-- NAO'S LETTER — Ch5 -->
+    <div class="letter-wrap reveal">
+      <div class="letter nao">
+        <div class="letter-from">Letter from Nao</div>
+        <div class="letter-to">Haruki,</div>
+        <div class="letter-body">
+          <p>
+            I think we met too late.<br />
+            But maybe that's still better than never.
+          </p>
+          <p>
+            Let's start with the small things.<br />
+            What's your favorite book?
+          </p>
+          <p>
+            (And can we keep pretending we're still strangers writing through
+            time, just for a little longer?)
+          </p>
+        </div>
+        <div class="letter-sig">— Nao</div>
+      </div>
+    </div>
+
+    <div class="section-break reveal">🌸 &nbsp; · &nbsp; 🌸</div>
+
+    <div class="prose reveal">
+      <div class="prose-inner">
+        <p>
+          She folded it. Tucked it into the same page of the paperback. Closed
+          the floorboard gently, like sealing something fragile.<br />
+          When she turned to leave, she glanced once more at the sakura branches
+          above.<br />
+          And this time, there were petals.<br />
+          Not many.<br />
+          Just enough to know that spring was real.
+        </p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!--          CHAPTER 6                        -->
+    <!-- ══════════════════════════════════════════ -->
+    <div id="ch6" class="chapter-break reveal" style="margin-top: 60px">
+      <div class="ch-break-inner">
+        <span class="ch-num-label">Chapter </span>
+        <h2 class="ch-break-title">A Place the Wind<br />Can't Reach</h2>
+        <div class="ch-break-sub">Friday · Rain</div>
+      </div>
+    </div>
+
+    <div class="prose reveal">
+      <div class="prose-inner has-dropcap">
+        <p>
+          Haruki.<br />
+          Nao found herself mouthing the name as she walked to class, like it
+          was a secret she wasn't ready to say aloud.<br />
+          She passed him in the hall once. She didn't know if he recognized her.
+          He didn't look her way. Or maybe he did. Just quickly. Just enough.
+        </p>
+        <p>
+          But each time she left a note, it was there. His reply. His rhythm.
+          His way of saying things that made the world feel softer.<br />
+          They never acknowledged it outside the pages.<br />
+          That was the rule.<br />
+          And somehow, it made everything more real.
+        </p>
+        <p>
+          That Friday, it rained.<br />
+          Not hard. Just the kind of rain that turned your thoughts quiet.<br />
+          She went to the bench anyway. Umbrella half-closed, scarf loose around
+          her neck.<br />
+          The book was dry. The letter inside was warm.
+        </p>
+      </div>
+    </div>
+
+    <div class="section-break reveal">· · ·</div>
+
+    <!-- HARUKI'S LETTER — Ch6 -->
+    <div class="letter-wrap reveal">
+      <div class="letter">
+        <div class="letter-from">Letter from Haruki</div>
+        <div class="letter-to">Nao,</div>
+        <div class="letter-body">
+          <p>I thought about your question. My favorite book.</p>
+          <p>
+            It changes, but lately?<br />
+            <em>The Little Prince.</em><br />
+            I like that it's about something simple — a boy and a rose — and yet
+            says everything about growing up, loneliness, and how we leave
+            people behind even when we love them.
+          </p>
+          <p>What about you?</p>
+          <p>
+            And…<br />
+            If we ever did meet — really meet — would we still write letters
+            after?
+          </p>
+        </div>
+        <div class="letter-sig">— Haruki</div>
+      </div>
+    </div>
+
+    <div class="section-break reveal">🌸 &nbsp; · &nbsp; 🌸</div>
+
+    <div class="prose reveal">
+      <div class="prose-inner">
+        <p>
+          She read the last question twice. Then once more.<br />
+          <em style="color: var(--petal)">Would we still write letters?</em
+          ><br />
+          She didn't know.
+        </p>
+        <p>
+          Part of her wanted to keep hiding behind paper forever. It was safe
+          here. Easier to be honest.<br />
+          But a part of her — the one that trembled every time she thought of
+          his name — wanted more.<br />
+          Wanted real.
+        </p>
+        <p>
+          She didn't answer right away.<br />
+          Instead, she sat on the bench for a long time, umbrella closed at her
+          side, letting the rain tap against her sleeves.<br />
+          Somewhere behind her, someone passed by. Quiet steps. Not rushing.<br />
+          She didn't look up.<br />
+          But her heart skipped anyway.
+        </p>
+      </div>
+    </div>
+
+    <!-- CLOSING -->
+    <div class="closing reveal">
+      <div class="closing-line">
+        Some questions don't need answering right away.<br />
+        Some silences say more than letters ever could.
+      </div>
+    </div>
+
+    <div class="section-break reveal">— End of Chapters Five &amp; Six —</div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav reveal">
+      <a href="tptfwasv2-2.html" class="bn-btn">← Chapter 2</a>
+      <a href="index.html" class="bn-btn">🏠 Library</a>
+    </div>
+
+    <button
+      id="scrollBtn"
+      onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+    >
+      ↑
+    </button>
+
+    <script>
+      "use strict";
+
+      /* ─── CURSOR ────────────────────────────── */
+      var cur = document.getElementById("cursor"),
+        ring = document.getElementById("cursor-ring");
+      var mx = window.innerWidth / 2,
+        my = window.innerHeight / 2;
+      var rx = mx,
+        ry = my;
+      document.addEventListener("mousemove", function (e) {
+        mx = e.clientX;
+        my = e.clientY;
+        cur.style.left = mx + "px";
+        cur.style.top = my + "px";
+      });
+      (function animRing() {
+        rx += (mx - rx) * 0.12;
+        ry += (my - ry) * 0.12;
+        ring.style.left = rx + "px";
+        ring.style.top = ry + "px";
+        requestAnimationFrame(animRing);
+      })();
+      document.querySelectorAll("a,button,.ch-pill").forEach(function (el) {
+        el.addEventListener("mouseenter", function () {
+          document.body.classList.add("hovering");
+        });
+        el.addEventListener("mouseleave", function () {
+          document.body.classList.remove("hovering");
+        });
+      });
+
+      /* ─── PETALS ────────────────────────────── */
+      var pc = document.getElementById("petalCanvas"),
+        pctx = pc.getContext("2d"),
+        petals = [];
+      function resizePC() {
+        pc.width = window.innerWidth;
+        pc.height = window.innerHeight;
+      }
+      resizePC();
+      window.addEventListener("resize", resizePC);
+      var pColors = ["#ffb7c5", "#f4a7c3", "#e8c0d0", "#ffd0e0", "#f0c0d8"];
+      function spawnPetal() {
+        petals.push({
+          x: Math.random() * pc.width,
+          y: -20,
+          sz: Math.random() * 11 + 5,
+          vy: Math.random() * 0.85 + 0.38,
+          vx: (Math.random() - 0.5) * 0.55,
+          rot: Math.random() * Math.PI * 2,
+          rs: (Math.random() - 0.5) * 0.024,
+          col: pColors[Math.floor(Math.random() * pColors.length)],
+          op: Math.random() * 0.28 + 0.1,
+        });
+      }
+      function drawPetals() {
+        pctx.clearRect(0, 0, pc.width, pc.height);
+        petals.forEach(function (p, i) {
+          pctx.save();
+          pctx.translate(p.x, p.y);
+          pctx.rotate(p.rot);
+          pctx.globalAlpha = p.op;
+          pctx.fillStyle = p.col;
+          pctx.beginPath();
+          pctx.ellipse(0, 0, p.sz, p.sz * 0.52, 0, 0, Math.PI * 2);
+          pctx.fill();
+          pctx.restore();
+          p.y += p.vy;
+          p.x += p.vx + Math.sin(p.y * 0.018) * 0.32;
+          p.rot += p.rs;
+          if (p.y > pc.height + 24) petals.splice(i, 1);
+        });
+        if (Math.random() < 0.055) spawnPetal();
+        requestAnimationFrame(drawPetals);
+      }
+      for (var i = 0; i < 7; i++) {
+        spawnPetal();
+        petals[petals.length - 1].y = Math.random() * pc.height;
+      }
+      drawPetals();
+
+      /* ─── RAIN (activates on ch6) ───────────── */
+      var rc = document.getElementById("rainCanvas"),
+        rctx = rc.getContext("2d"),
+        drops = [],
+        rainActive = false;
+      function resizeRC() {
+        rc.width = window.innerWidth;
+        rc.height = window.innerHeight;
+      }
+      resizeRC();
+      window.addEventListener("resize", resizeRC);
+      function spawnDrop() {
+        drops.push({
+          x: Math.random() * rc.width,
+          y: -15,
+          l: Math.random() * 14 + 6,
+          vy: Math.random() * 3 + 2,
+          vx: -(Math.random() * 0.4 + 0.15),
+          op: Math.random() * 0.18 + 0.05,
+          w: Math.random() * 0.6 + 0.2,
+        });
+      }
+      function drawRain() {
+        rctx.clearRect(0, 0, rc.width, rc.height);
+        drops.forEach(function (d, i) {
+          rctx.beginPath();
+          rctx.moveTo(d.x, d.y);
+          rctx.lineTo(d.x + d.vx * 4, d.y + d.l);
+          rctx.strokeStyle = "rgba(180,120,160," + d.op + ")";
+          rctx.lineWidth = d.w;
+          rctx.stroke();
+          d.y += d.vy;
+          d.x += d.vx;
+          if (d.y > rc.height + 20) drops.splice(i, 1);
+        });
+        if (rainActive && Math.random() < 0.28) spawnDrop();
+        requestAnimationFrame(drawRain);
+      }
+      drawRain();
+
+      /* ─── PROGRESS ──────────────────────────── */
+      var prog = document.getElementById("prog");
+      window.addEventListener(
+        "scroll",
+        function () {
+          var s = window.scrollY,
+            h = document.documentElement.scrollHeight - window.innerHeight;
+          prog.style.width = (h > 0 ? (s / h) * 100 : 0) + "%";
+          document.getElementById("scrollBtn").classList.toggle("vis", s > 200);
+          /* activate rain when ch6 in view */
+          var ch6 = document.getElementById("ch6");
+          if (ch6) {
+            var rect = ch6.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.8 && !rainActive) {
+              rainActive = true;
+              document.getElementById("rainCanvas").classList.add("visible");
+            }
+          }
+        },
+        { passive: true },
+      );
+
+      /* ─── REVEAL ON SCROLL ──────────────────── */
+      var reveals = document.querySelectorAll(".reveal");
+      var obs = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              obs.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
+      );
+      reveals.forEach(function (el) {
+        obs.observe(el);
+      });
+
+      /* ─── DARK MODE ─────────────────────────── */
+      function toggleDark() {
+        document.body.classList.toggle("dark");
+        var on = document.body.classList.contains("dark");
+        document.getElementById("themeBtn").textContent = on ? "☀️" : "🌙";
+        try {
+          localStorage.setItem("darkMode", on ? "on" : "off");
+        } catch (e) {}
+      }
+
+      /* ─── LOCAL STORAGE ─────────────────────── */
+      try {
+        var r = JSON.parse(localStorage.getItem("tptfwasv2Read") || "[]");
+        if (!r.includes("ch5")) r.push("ch5");
+        if (!r.includes("ch6")) r.push("ch6");
+        localStorage.setItem("tptfwasv2Read", JSON.stringify(r));
+      } catch (e) {}
+
+      window.addEventListener("load", function () {
+        try {
+          if (localStorage.getItem("darkMode") === "on") {
+            document.body.classList.add("dark");
+            document.getElementById("themeBtn").textContent = "☀️";
+          }
+        } catch (e) {}
+      });
+    </script>
+  </body>
+</html>
